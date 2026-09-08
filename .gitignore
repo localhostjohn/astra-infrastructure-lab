@@ -1,0 +1,48 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+*.kdbx
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+*.auto.tfvars
+.terraform/
+
+# Live service data and backups
+*.db
+*.sqlite
+*.sqlite3
+*.bak
+*.backup
+*.pcap
+*.pcapng
+*.vhd
+*.vhdx
+*.vmdk
+*.vdi
+*.iso
+*.zip
+*.tar
+*.tar.gz
+
+# Local output / inventories
+private/
+secrets/
+backups/
+logs/
+*.log
+inventory.local.*
+*.local.json
+*.local.yml
+*.local.yaml
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
