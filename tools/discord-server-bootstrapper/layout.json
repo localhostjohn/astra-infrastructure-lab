@@ -1,0 +1,67 @@
+{
+  "server_name": "Example Community",
+  "audit_reason": "Authorised Discord server bootstrap",
+  "message_marker": "Example Community Setup",
+  "staff_roles": ["Admin", "Moderator"],
+  "roles": [
+    {
+      "name": "Admin",
+      "colour": "#5865F2",
+      "hoist": true,
+      "mentionable": false,
+      "permissions": ["manage_channels", "manage_roles", "manage_messages", "manage_threads", "kick_members", "moderate_members", "view_audit_log"]
+    },
+    {
+      "name": "Moderator",
+      "colour": "#57F287",
+      "hoist": true,
+      "mentionable": false,
+      "permissions": ["manage_messages", "manage_threads", "kick_members", "moderate_members", "view_audit_log"]
+    },
+    {
+      "name": "Member",
+      "colour": "#99AAB5",
+      "hoist": false,
+      "mentionable": false,
+      "permissions": []
+    }
+  ],
+  "categories": [
+    {
+      "name": "START HERE",
+      "mode": "public",
+      "channels": [
+        {"name": "welcome", "topic": "Start here.", "mode": "read_only", "kind": "text"},
+        {"name": "rules", "topic": "Community rules.", "mode": "read_only", "kind": "text"}
+      ]
+    },
+    {
+      "name": "COMMUNITY",
+      "mode": "public",
+      "channels": [
+        {"name": "general", "topic": "General discussion.", "kind": "text"},
+        {"name": "help", "topic": "Ask for help here.", "kind": "text"},
+        {"name": "General Voice", "kind": "voice"}
+      ]
+    },
+    {
+      "name": "STAFF",
+      "mode": "staff",
+      "channels": [
+        {"name": "staff-chat", "topic": "Private staff discussion.", "kind": "text"},
+        {"name": "mod-logs", "topic": "Private moderation logs.", "kind": "text"}
+      ]
+    },
+    {
+      "name": "OWNER OPS",
+      "mode": "owner",
+      "channels": [
+        {"name": "operations", "topic": "Owner-only operational notes.", "kind": "text"}
+      ]
+    }
+  ],
+  "starter_messages": {
+    "welcome": "Welcome! Please read {channel:rules} before joining the conversation in {channel:general}.",
+    "rules": "Be respectful, keep secrets and tokens private, and use the correct channels."
+  }
+}
