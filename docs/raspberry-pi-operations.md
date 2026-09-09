@@ -4,7 +4,7 @@
 
 This workstream documents practical Linux and infrastructure operations on the personal Astra Raspberry Pi 5. It is a learning record, not a complete deployment package or a claim that every service is currently healthy. The existing [operations overview](operations.md) covers the broader principles; this page provides a more focused Pi runbook and evidence plan.
 
-The lab has included Docker, Portainer, Uptime Kuma, host-installed Tailscale, private remote access and Restic backup work. AdGuard Home has been prepared and a custom blocklist developed, but a fully validated network-wide DNS deployment is not claimed. Backup scheduling, retention and repository-check exercises have also been undertaken. Their current configuration, execution history and recovery results still need to be verified before publication.
+The lab has included Docker, Portainer, Uptime Kuma, host-installed Tailscale, private remote access and Restic backup work. AdGuard Home has been prepared and a custom blocklist developed, but a fully validated network-wide DNS deployment is not claimed. Backup scheduling, retention and a disposable-file restore have now been validated through actual terminal output. The repository integrity check and complete application recovery remain outstanding.
 
 ## Illustrative service architecture
 
@@ -20,10 +20,10 @@ flowchart TB
     D -. DNS workstream .-> G[AdGuard Home]
     P --> R[Restic backup repository]
     P --> S[systemd backup / retention / check units]
-    R -. Restore verification .-> T[Isolated test directory]
+    R --> T[Isolated disposable-file restore]
 ```
 
-The arrows do not imply that all components are currently running or that every path has been tested. In particular, the restore path remains to be evidenced.
+The arrows do not imply that all components are currently running or that every path has been tested. The restore path has been validated for a small disposable dataset, not for a complete application recovery.
 
 ## Read-only baseline collection
 
@@ -66,18 +66,20 @@ If a unit has a different name or is not installed, record that rather than crea
 | PI-02 | Docker and application inventory | Reviewed service list and image versions | Pending current verification |
 | PI-03 | Private management access | Access-path diagram and controlled connectivity test | Pending current verification |
 | PI-04 | Monitoring | Defined checks and a controlled alert test | Pending current verification |
-| PI-05 | Backup scheduling | Reviewed unit definitions and actual execution history | Pending current verification |
-| PI-06 | Retention | Dry-run and approved retention outcome | Pending current verification |
-| PI-07 | Repository integrity | Actual repository-check result | Pending current verification |
-| PI-08 | Recovery | Isolated restore and checksum comparison | Not yet evidenced |
+| PI-05 | Backup scheduling | Reviewed unit definitions and actual execution history | **Passed — 9 September 2026** |
+| PI-06 | Retention | Dry-run and approved retention outcome | **Passed — 9 September 2026; no deletions** |
+| PI-07 | Repository integrity | Actual repository-check result | Pending first verified run |
+| PI-08 | Recovery | Isolated restore and checksum comparison | **Passed — 9 September 2026; disposable file** |
 
-Historical setup and test notes are useful context, but they do not replace current validation. Record the date, software version, check performed, expected outcome, actual result and any corrective action for each exercise.
+The backup, retention and restore results are documented in [Backup and Recovery Validation](../evidence/2026-09-09-raspberry-pi-backup-recovery.md). Historical setup and test notes remain useful context, but they do not replace current validation. Record the date, software version, check performed, expected outcome, actual result and any corrective action for each exercise.
 
 ## Backup and recovery approach
 
 Treat backup, retention, repository integrity and restore as separate controls. A successful timer start is not proof that data was backed up; a successful snapshot is not proof that it can be restored; and a repository integrity check is not a substitute for an application-consistent recovery test.
 
-For the first recovery exercise, use disposable files and a separate empty restore directory. Do not restore over live Docker volumes or application data. Confirm the repository and snapshot selection privately, preserve encryption/recovery credentials, compare the restored files with the originals and record the result. Avoid publishing repository URLs, credentials, actual file inventories or backup archives.
+The first recovery exercise used a disposable 36-byte file and an isolated temporary restore directory. The restored file matched the original by SHA-256 and byte-for-byte comparison. No live Docker volumes or application data were overwritten. This establishes recovery of that selected dataset only; application-level recovery remains to be tested.
+
+For subsequent exercises, use disposable files and a separate empty restore directory. Do not restore over live Docker volumes or application data. Confirm the repository and snapshot selection privately, preserve encryption/recovery credentials, compare the restored files with the originals and record the result. Avoid publishing repository URLs, credentials, actual file inventories or backup archives.
 
 Before changing retention, confirm the repository, snapshot scope and policy. Review a dry run first and never copy destructive `forget`, `prune` or deletion commands from a portfolio example into a live service without checking their effects.
 
@@ -87,7 +89,7 @@ Keep Tailscale authentication material, private DNS names, home addresses, actua
 
 ## Next practical exercise
 
-Collect the read-only baseline, review the existing backup unit definitions and inspect the latest execution history privately. Then select a disposable dataset for a non-destructive restore test. Only after the restore has actually passed should the evidence register be updated to show recovery validation.
+Complete the current host and container baseline, verify the repository integrity check after its scheduled execution, and plan an isolated application-level recovery exercise. Do not mark broader recoverability as passed until the actual results have been recorded.
 
 ## References
 
