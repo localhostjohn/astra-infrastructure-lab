@@ -1,6 +1,6 @@
 # Astra Infrastructure Lab
 
-A personal infrastructure engineering lab covering Windows Server, Active Directory, Microsoft Azure, networking, Linux, containers and operational troubleshooting.
+A personal infrastructure engineering lab covering Windows Server, Active Directory, Microsoft Azure, networking, Linux, containers, monitoring, automation and operational troubleshooting.
 
 **Status:** Active learning project. This repository is a documentation-first portfolio, not a production deployment package. Some exercises have been completed in the lab, while others are planned or still require validation. The distinction is recorded below.
 
@@ -17,8 +17,9 @@ The aim is to develop practical infrastructure skills by building services, unde
 | Service accounts | Dedicated account/group and scheduled-task exercise completed and validated | Least privilege and non-interactive logon |
 | Azure | Windows Server VM and supporting cloud networking used for lab administration | Compute, virtual networking, access and cost awareness |
 | Raspberry Pi | Pi 5, Docker, Portainer and Tailscale configured; remote access validated | Linux, containers and private remote administration |
-| Monitoring | Uptime Kuma deployed and accessed in the lab | Service availability and operational monitoring |
+| Monitoring | Prometheus/Grafana monitoring added alongside Uptime Kuma; host dashboard work completed, with alerting and controlled-outage validation still in progress | Metrics, dashboards, availability, alerting and incident response |
 | Backup | Scheduled backup, retention dry run and isolated test-file restore recorded; integrity and application recovery outstanding | Backup design, retention and restore verification |
+| Discord automation | Astra server structure successfully bootstrapped with a reusable Python/JSON tool; generic version retained under `tools/` | Automation, configuration-as-code concepts, permissions and repeatability |
 | Entra synchronisation | Planned; no completed end-to-end hybrid identity validation claimed | Identity lifecycle and hybrid architecture |
 | VLAN segmentation | Planned; not claimed as implemented on the home network | Routing, switching and trust boundaries |
 | Infrastructure as code | Learning roadmap | Terraform, Bicep and repeatable deployment |
@@ -27,11 +28,13 @@ These are summaries of previous lab exercises, not a claim that the entire envir
 
 ## Latest portfolio milestone — September 2026
 
-Recorded evidence now covers a successful scheduled encrypted Restic backup to Azure, a retention dry run with no deletions, and an isolated disposable-file restore verified by matching SHA-256 hashes and byte comparison. These results demonstrate backup execution and recovery of the selected test file, not complete application recovery. See the [9 September backup and recovery evidence](evidence/2026-09-09-raspberry-pi-backup-recovery.md).
+Recorded evidence covers a successful scheduled encrypted Restic backup to Azure, a retention dry run with no deletions, and an isolated disposable-file restore verified by matching SHA-256 hashes and byte comparison. These results demonstrate backup execution and recovery of the selected test file, not complete application recovery. See the [9 September backup and recovery evidence](evidence/2026-09-09-raspberry-pi-backup-recovery.md).
 
 The read-only AD inventory script also has [six passing local mocked Pester tests recorded on 8 September](evidence/2026-09-08-ad-inventory-unit-tests.md). Live AD execution and CI success remain separate, unverified claims.
 
-**Next milestone:** a bounded outage of one disposable container, documenting healthy → down → recovered monitoring states, detection delay, rollback and lessons learned. No essential service or remote-access dependency should be stopped. Repository integrity and application-level restore validation remain outstanding.
+A reusable [Discord Server Bootstrapper](tools/discord-server-bootstrapper/README.md) has now been added after successfully completing the Astra server-structure build. It uses a JSON layout, local `.env` secrets, preview/apply modes, explicit confirmation and non-destructive reruns. See the [Discord bootstrapper evidence note](evidence/2026-09-09-discord-server-bootstrapper.md).
+
+**Next milestone:** complete alert routing and perform a bounded outage of one disposable container, documenting healthy → down → recovered monitoring states, detection delay, rollback and lessons learned. No essential service or remote-access dependency should be stopped. Repository integrity and application-level restore validation remain outstanding.
 
 See the [detailed evidence checklist and controlled outage plan](evidence/portfolio-evidence-checklist.md) for completed evidence, remaining checks, safety gates and acceptance criteria.
 
@@ -49,6 +52,9 @@ flowchart TB
     D --> G[Raspberry Pi 5]
     G --> H[Docker / Portainer]
     H --> I[Uptime Kuma]
+    G --> N[Prometheus / Grafana]
+    N --> O[Metrics dashboards]
+    N -. alerting validation in progress .-> P[Discord operations channels]
     H -. DNS filtering workstream .-> J[AdGuard Home]
     G --> K[Backup repository]
     E -. Planned and subject to validation .-> L[Microsoft Entra ID]
@@ -76,10 +82,19 @@ astra-infrastructure-lab/
 │   └── Get-AstraADHealth.ps1
 ├── tests/
 │   └── Get-AstraADHealth.Tests.ps1
+├── tools/
+│   └── discord-server-bootstrapper/
+│       ├── README.md
+│       ├── setup.py
+│       ├── layout.py
+│       ├── layout.json
+│       ├── requirements.txt
+│       └── tests/
 ├── evidence/
 │   ├── README.md
 │   ├── 2026-09-08-ad-inventory-unit-tests.md
 │   ├── 2026-09-09-raspberry-pi-backup-recovery.md
+│   ├── 2026-09-09-discord-server-bootstrapper.md
 │   └── portfolio-evidence-checklist.md
 └── examples/
     └── README.md
@@ -91,7 +106,7 @@ This repository intentionally does not contain live deployment secrets, actual A
 
 The emphasis is on infrastructure engineering rather than simply installing products. Each workstream should demonstrate requirements, design choices, implementation, security considerations, evidence of testing, failure handling and lessons learned.
 
-The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. [Operations](docs/operations.md) covers monitoring, backup and recovery. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning.
+The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. [Operations](docs/operations.md) covers monitoring, backup and recovery. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning. The [Discord Server Bootstrapper](tools/discord-server-bootstrapper/README.md) provides a reusable automation example for configuration-driven service setup.
 
 ## First practical automation example
 
@@ -118,6 +133,8 @@ For Windows Server work, start with a disposable VM and a lab-only directory. Fo
 - [Microsoft Learn: Microsoft Entra](https://learn.microsoft.com/entra/)
 - [Docker documentation](https://docs.docker.com/)
 - [Tailscale documentation](https://tailscale.com/kb/)
+- [Prometheus documentation](https://prometheus.io/docs/)
+- [Grafana documentation](https://grafana.com/docs/)
 - [Restic documentation](https://restic.readthedocs.io/)
 
 ## Security and publication
