@@ -18,12 +18,22 @@ The aim is to develop practical infrastructure skills by building services, unde
 | Azure | Windows Server VM and supporting cloud networking used for lab administration | Compute, virtual networking, access and cost awareness |
 | Raspberry Pi | Pi 5, Docker, Portainer and Tailscale configured; remote access validated | Linux, containers and private remote administration |
 | Monitoring | Uptime Kuma deployed and accessed in the lab | Service availability and operational monitoring |
-| Backup | Restic repository/snapshot work recorded | Backup design, retention and restore verification |
+| Backup | Scheduled backup, retention dry run and isolated test-file restore recorded; integrity and application recovery outstanding | Backup design, retention and restore verification |
 | Entra synchronisation | Planned; no completed end-to-end hybrid identity validation claimed | Identity lifecycle and hybrid architecture |
 | VLAN segmentation | Planned; not claimed as implemented on the home network | Routing, switching and trust boundaries |
 | Infrastructure as code | Learning roadmap | Terraform, Bicep and repeatable deployment |
 
 These are summaries of previous lab exercises, not a claim that the entire environment is currently online or that all components have passed production acceptance testing. Screenshots and test results will be added only after they have been reviewed and sanitised.
+
+## Latest portfolio milestone — September 2026
+
+Recorded evidence now covers a successful scheduled encrypted Restic backup to Azure, a retention dry run with no deletions, and an isolated disposable-file restore verified by matching SHA-256 hashes and byte comparison. These results demonstrate backup execution and recovery of the selected test file, not complete application recovery. See the [9 September backup and recovery evidence](evidence/2026-09-09-raspberry-pi-backup-recovery.md).
+
+The read-only AD inventory script also has [six passing local mocked Pester tests recorded on 8 September](evidence/2026-09-08-ad-inventory-unit-tests.md). Live AD execution and CI success remain separate, unverified claims.
+
+**Next milestone:** a bounded outage of one disposable container, documenting healthy → down → recovered monitoring states, detection delay, rollback and lessons learned. No essential service or remote-access dependency should be stopped. Repository integrity and application-level restore validation remain outstanding.
+
+See the [detailed evidence checklist and controlled outage plan](evidence/portfolio-evidence-checklist.md) for completed evidence, remaining checks, safety gates and acceptance criteria.
 
 ## Reference architecture
 
@@ -58,6 +68,7 @@ astra-infrastructure-lab/
 │   ├── architecture.md
 │   ├── active-directory.md
 │   ├── operations.md
+│   ├── raspberry-pi-operations.md
 │   ├── validation.md
 │   └── roadmap.md
 ├── scripts/
@@ -66,7 +77,10 @@ astra-infrastructure-lab/
 ├── tests/
 │   └── Get-AstraADHealth.Tests.ps1
 ├── evidence/
-│   └── README.md
+│   ├── README.md
+│   ├── 2026-09-08-ad-inventory-unit-tests.md
+│   ├── 2026-09-09-raspberry-pi-backup-recovery.md
+│   └── portfolio-evidence-checklist.md
 └── examples/
     └── README.md
 ```
@@ -81,7 +95,7 @@ The [Active Directory](docs/active-directory.md) notes record identity and polic
 
 ## First practical automation example
 
-The [read-only AD inventory script](scripts/README.md) provides a concrete, reviewable starting point for PowerShell automation. It collects domain, forest and domain-controller metadata, supports optional replication-failure queries, and includes mocked Pester tests. It does not change directory objects or write files unless a local report path is explicitly supplied. The tests and live-lab execution are not yet recorded as passed.
+The [read-only AD inventory script](scripts/README.md) provides a concrete, reviewable starting point for PowerShell automation. It collects domain, forest and domain-controller metadata, supports optional replication-failure queries, and includes mocked Pester tests. It does not change directory objects or write files unless a local report path is explicitly supplied. Six local mocked tests are [recorded as passed](evidence/2026-09-08-ad-inventory-unit-tests.md); live-lab execution and CI success are not yet verified.
 
 ## Getting started
 
