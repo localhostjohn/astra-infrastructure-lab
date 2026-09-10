@@ -12,7 +12,7 @@ The Raspberry Pi workstream supports practical Linux administration, container m
 - Installed Tailscale on the Pi host and validated private remote SSH access.
 - Configured Tailscale Serve for private access to selected services.
 - Created AdGuard Home directories and developed a custom blocklist; a fully validated network-wide DNS deployment is not claimed.
-- Worked through a Restic backup repository and snapshot exercise. A complete end-to-end restore test is not yet evidenced in this public documentation.
+- Recorded a successful scheduled Restic backup, non-destructive retention dry run and isolated disposable-file restore on 9 September 2026. Repository integrity and application-level recovery remain outstanding.
 
 ## Operating principles
 
@@ -36,6 +36,8 @@ A custom blocklist is a configuration-management exercise, not a complete securi
 
 A backup is not proven recoverable merely because a snapshot command completes. Record the source data, repository destination, encryption/key-recovery arrangements, retention policy and restore procedure. Keep backup credentials separate from the source host where practical. Test a restore to an isolated location and compare files or checksums before claiming recovery is validated.
 
+The dedicated [Backup and Recovery Engineering](backup-recovery.md) page records the control model, current evidence and staged route from file recovery through repository integrity to application-level recovery.
+
 ## Example checks (run only on your own lab)
 
 ```bash
@@ -55,17 +57,19 @@ lsblk -f
 
 These are read-only diagnostic examples, not output captured from the actual Pi. Do not run administrative changes from a public README without checking their effect on your own host.
 
-## Restore test plan
+## Recovery validation status
 
-1. Select a disposable, non-sensitive test directory and create known test files.
-2. Record file names, sizes and checksums.
-3. Create a backup using the configured repository and confirm the snapshot is listed.
-4. Restore into a separate, empty location, never over live application data for the first test.
-5. Compare the restored files with the originals and record any errors.
-6. Document the recovery time, missing dependencies and corrective actions.
-7. Only mark the test as passed when the expected data and application-specific checks have succeeded.
+A file-level recovery exercise was completed on 9 September 2026 using a disposable test file and an isolated restore directory. The restored file matched the original by SHA-256 and byte comparison. See [Raspberry Pi Backup and Recovery Validation](../evidence/2026-09-09-raspberry-pi-backup-recovery.md).
 
-**Status:** Planned validation. No restore result is fabricated here.
+That result proves recovery of the selected test file only. It does not establish repository-wide integrity, application-consistent backup or full service recovery.
+
+The next recovery checks are:
+
+1. record an actual successful repository integrity check;
+2. define RPO and RTO targets for one low-risk lab service;
+3. restore that service's data/configuration into an isolated instance;
+4. validate permissions, application startup, functional behaviour and monitoring;
+5. record measured recovery time and limitations.
 
 ## References
 
