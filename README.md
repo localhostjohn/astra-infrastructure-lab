@@ -74,12 +74,14 @@ astra-infrastructure-lab/
 │   ├── architecture.md
 │   ├── active-directory.md
 │   ├── operations.md
+│   ├── backup-recovery.md
 │   ├── raspberry-pi-operations.md
 │   ├── validation.md
 │   └── roadmap.md
 ├── scripts/
 │   ├── README.md
-│   └── Get-AstraADHealth.ps1
+│   ├── Get-AstraADHealth.ps1
+│   └── Run-AstraResticRestoreDrill.sh
 ├── tests/
 │   └── Get-AstraADHealth.Tests.ps1
 ├── tools/
@@ -95,6 +97,7 @@ astra-infrastructure-lab/
 │   ├── 2026-09-08-ad-inventory-unit-tests.md
 │   ├── 2026-09-09-raspberry-pi-backup-recovery.md
 │   ├── 2026-09-09-discord-server-bootstrapper.md
+│   ├── backup-restore-evidence-template.md
 │   └── portfolio-evidence-checklist.md
 └── examples/
     └── README.md
@@ -106,7 +109,7 @@ This repository intentionally does not contain live deployment secrets, actual A
 
 The emphasis is on infrastructure engineering rather than simply installing products. Each workstream should demonstrate requirements, design choices, implementation, security considerations, evidence of testing, failure handling and lessons learned.
 
-The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. [Operations](docs/operations.md) covers monitoring, backup and recovery. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning. The [Discord Server Bootstrapper](tools/discord-server-bootstrapper/README.md) provides a reusable automation example for configuration-driven service setup.
+The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. [Operations](docs/operations.md) covers Linux, containers and operational practice. [Backup and Recovery Engineering](docs/backup-recovery.md) separates backup execution, retention, integrity and recovery, and includes a reusable disposable restore drill. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning. The [Discord Server Bootstrapper](tools/discord-server-bootstrapper/README.md) provides a reusable automation example for configuration-driven service setup.
 
 ## First practical automation example
 
