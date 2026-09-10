@@ -12,7 +12,9 @@ The Raspberry Pi workstream supports practical Linux administration, container m
 - Installed Tailscale on the Pi host and validated private remote SSH access.
 - Configured Tailscale Serve for private access to selected services.
 - Created AdGuard Home directories and developed a custom blocklist; a fully validated network-wide DNS deployment is not claimed.
-- Worked through a Restic backup repository and snapshot exercise. A complete end-to-end restore test is not yet evidenced in this public documentation.
+- Worked through a Restic backup repository, scheduled backup and retention exercises.
+- Added a disposable Restic restore drill and recovery evidence template to the repository.
+- A complete end-to-end restore from the live Raspberry Pi backup repository is still not claimed until it has been run and evidenced.
 
 ## Operating principles
 
@@ -36,6 +38,8 @@ A custom blocklist is a configuration-management exercise, not a complete securi
 
 A backup is not proven recoverable merely because a snapshot command completes. Record the source data, repository destination, encryption/key-recovery arrangements, retention policy and restore procedure. Keep backup credentials separate from the source host where practical. Test a restore to an isolated location and compare files or checksums before claiming recovery is validated.
 
+The dedicated [Backup and Recovery workstream](backup-recovery.md) contains a disposable Restic exercise that can be used to practise this process without touching the real Astra backup repository.
+
 ## Example checks (run only on your own lab)
 
 ```bash
@@ -55,17 +59,25 @@ lsblk -f
 
 These are read-only diagnostic examples, not output captured from the actual Pi. Do not run administrative changes from a public README without checking their effect on your own host.
 
-## Restore test plan
+## Restore validation progression
 
-1. Select a disposable, non-sensitive test directory and create known test files.
-2. Record file names, sizes and checksums.
-3. Create a backup using the configured repository and confirm the snapshot is listed.
-4. Restore into a separate, empty location, never over live application data for the first test.
-5. Compare the restored files with the originals and record any errors.
-6. Document the recovery time, missing dependencies and corrective actions.
-7. Only mark the test as passed when the expected data and application-specific checks have succeeded.
+### Phase 1 — disposable recovery drill
 
-**Status:** Planned validation. No restore result is fabricated here.
+Run `scripts/Run-AstraResticRestoreDrill.sh` on an isolated Linux host. It creates temporary test files, a temporary Restic repository and a separate restore target. The drill verifies restored data using SHA-256 checksums.
+
+**Status:** Script prepared. Execution result must be recorded separately; no passing result is claimed by this document.
+
+### Phase 2 — live repository, isolated data restore
+
+Select non-sensitive data from the real lab backup repository and restore it to a separate path. Do not overwrite active application data. Record the selected snapshot, repository check, file validation and recovery time privately, then publish only sanitised evidence.
+
+**Status:** Planned validation.
+
+### Phase 3 — service recovery exercise
+
+Choose a low-risk lab service with documented persistent data, restore it on an isolated or disposable host and perform application-level validation.
+
+**Status:** Future milestone.
 
 ## References
 
