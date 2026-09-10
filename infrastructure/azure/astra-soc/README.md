@@ -1,17 +1,21 @@
-# Astra SOC — Azure Infrastructure as Code
+# Astra SOC — Azure Bicep
 
-This directory will contain the Bicep templates used to deploy the Azure foundation for the `astra-soc` Ubuntu VM.
+This directory contains the first Infrastructure-as-Code implementation for the planned `astra-soc` Ubuntu VM.
 
-## Goals
+## What this deploys
 
-- Keep the deployment small and understandable.
-- Parameterise environment-specific values.
-- Avoid secrets in source control.
-- Validate templates before deployment.
-- Document deployment and teardown.
-- Use this project as a practical Bicep learning exercise.
+- Virtual network: `vnet-astra-soc`
+- Security subnet: `snet-security`
+- Network Security Group: `nsg-astra-soc`
+- Network interface
+- Ubuntu Server 24.04 LTS VM: `astra-soc`
+- Trusted Launch with Secure Boot and vTPM
+- SSH public-key authentication
+- 128 GiB Standard SSD OS disk
 
-## Planned structure
+No public IP is created by this first version. The VM is deliberately private-first.
+
+## Structure
 
 ```text
 infrastructure/azure/astra-soc/
@@ -24,47 +28,105 @@ infrastructure/azure/astra-soc/
     └── vm.bicep
 ```
 
-## Initial deployment scope
+`main.bicep` coordinates three small modules so networking, security rules and compute remain easy to understand while learning Bicep.
 
-The first iteration should deploy only the Azure foundation required for the SOC host:
+## Important networking note
 
-- Virtual network
-- Security subnet
-- Network Security Group
-- Network interface
-- Ubuntu virtual machine
-- SSH public-key authentication
-- Useful outputs for validation
+The template can optionally add an inbound TCP/22 NSG rule for a supplied bootstrap CIDR. However, this first iteration intentionally creates **no public IP**, so that rule alone does not make the VM reachable from the internet.
 
-Wazuh, Docker and application configuration should remain separate from the first infrastructure deployment so the Azure layer can be understood and validated independently.
+A private management route must exist before SSH will work, for example through a later Tailscale bootstrap method, VPN/jump host, Azure Bastion, or another authorised private path.
 
-## Suggested workflow
+This is intentional: Wazuh management and agent-facing services should not be broadly exposed to the public internet.
 
-```bash
-az login
-az account show
-az bicep version
+## Ubuntu image
+
+The VM uses the Azure Marketplace image:
+
+```text
+Canonical:ubuntu-24_04-lts:server:latest
+```
+
+## Before deployment
+
+Check:
+
+1. Azure CLI is installed and authenticated.
+2. The intended subscription is selected.
+3. `az bicep version` succeeds.
+4. The target resource group exists.
+5. The selected VM size is available in the target region.
+6. You have a valid SSH public key.
+7. `10.40.0.0/16` and `10.40.10.0/24` do not overlap with networks you intend to connect privately.
+
+## Create a local parameter file
+
+Copy the example:
+
+```powershell
+Copy-Item .\main.bicepparam.example .\main.bicepparam
+```
+
+Then replace the placeholder public key.
+
+The repository ignores `main.bicepparam`, so environment-specific deployment values can remain local.
+
+## Build the Bicep
+
+```powershell
 az bicep build --file main.bicep
 ```
 
-Before creating resources, validate the deployment at the intended scope. The exact command will depend on whether the first template is resource-group scoped or subscription scoped.
+This checks that Bicep can compile the template into an ARM JSON template.
 
-After validation, deploy with explicitly reviewed parameters. Do not paste passwords, private keys or auth tokens into command history or committed parameter files.
+## Validate against Azure
 
-## Parameters
+```powershell
+az deployment group validate `
+  --resource-group <resource-group> `
+  --template-file main.bicep `
+  --parameters main.bicepparam
+```
 
-The example parameter file should contain safe defaults or placeholders only. Likely parameters include:
+Validation does not replace a what-if review.
 
-- Azure location
-- VM name
-- VM size
-- administrator username
-- SSH public key
-- VNet address prefix
-- subnet prefix
-- resource tags
+## Preview with what-if
 
-The real SSH public key may be supplied at deployment time rather than committed if preferred.
+```powershell
+az deployment group what-if `
+  --resource-group <resource-group> `
+  --template-file main.bicep `
+  --parameters main.bicepparam
+```
+
+Review every proposed resource and property before creating anything.
+
+## Deploy
+
+Only after validation and what-if review:
+
+```powershell
+az deployment group create `
+  --resource-group <resource-group> `
+  --name astra-soc-foundation `
+  --template-file main.bicep `
+  --parameters main.bicepparam
+```
+
+## What this teaches
+
+This first iteration demonstrates:
+
+- Parameters and default values
+- Secure parameters
+- Modules
+- Resource dependencies through module outputs
+- Resource IDs
+- Conditional NSG rules
+- Outputs
+- NIC-to-subnet and NSG relationships
+- Trusted Launch VM configuration
+- SSH-only Linux authentication
+- Repeatable Azure deployment
 
 ## Security
 
@@ -76,15 +138,21 @@ Do not commit:
 - Tailscale auth keys
 - Wazuh credentials
 - API keys
-- Subscription or tenant data unless intentionally sanitised
 - Real public-IP allowlists
+- Employer or production information
 
-Public management access should be temporary and tightly restricted where required for initial bootstrap. Routine administration should move to a private management path once validated.
+## Next iteration
 
-## Teardown
+After the Bicep compiles and Azure validation succeeds:
 
-The project will include a documented cleanup step. Resource deletion should be verified before the workstream is described as fully repeatable.
+1. Decide and implement the private bootstrap/management path.
+2. Run `what-if`.
+3. Review the resource cost and SKU availability.
+4. Deploy the Azure foundation.
+5. Establish private SSH access.
+6. Patch Ubuntu.
+7. Install Docker Engine and Docker Compose.
+8. Capture sanitised validation evidence.
+9. Begin Wazuh deployment only after the host foundation is stable.
 
-## Status
-
-Documentation foundation created. Bicep implementation is the next stage.
+Do not describe `astra-soc` as deployed or validated in portfolio documentation until those tests have actually been completed.
