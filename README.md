@@ -18,7 +18,7 @@ The aim is to develop practical infrastructure skills by building services, unde
 | Azure | Windows Server VM and supporting cloud networking used for lab administration | Compute, virtual networking, access and cost awareness |
 | Raspberry Pi | Pi 5, Docker, Portainer and Tailscale configured; remote access validated | Linux, containers and private remote administration |
 | Monitoring | Uptime Kuma deployed and accessed in the lab | Service availability and operational monitoring |
-| Backup | Restic repository/snapshot work recorded | Backup design, retention and restore verification |
+| Backup & recovery | Restic snapshot/retention work recorded; disposable restore drill and evidence template added; live-lab restore still requires validation | Backup design, integrity checking, restore verification, RPO/RTO and recovery evidence |
 | Entra synchronisation | Planned; no completed end-to-end hybrid identity validation claimed | Identity lifecycle and hybrid architecture |
 | VLAN segmentation | Planned; not claimed as implemented on the home network | Routing, switching and trust boundaries |
 | Infrastructure as code | Learning roadmap | Terraform, Bicep and repeatable deployment |
@@ -58,15 +58,18 @@ astra-infrastructure-lab/
 │   ├── architecture.md
 │   ├── active-directory.md
 │   ├── operations.md
+│   ├── backup-recovery.md
 │   ├── validation.md
 │   └── roadmap.md
 ├── scripts/
 │   ├── README.md
-│   └── Get-AstraADHealth.ps1
+│   ├── Get-AstraADHealth.ps1
+│   └── Run-AstraResticRestoreDrill.sh
 ├── tests/
 │   └── Get-AstraADHealth.Tests.ps1
 ├── evidence/
-│   └── README.md
+│   ├── README.md
+│   └── backup-restore-evidence-template.md
 └── examples/
     └── README.md
 ```
@@ -77,11 +80,13 @@ This repository intentionally does not contain live deployment secrets, actual A
 
 The emphasis is on infrastructure engineering rather than simply installing products. Each workstream should demonstrate requirements, design choices, implementation, security considerations, evidence of testing, failure handling and lessons learned.
 
-The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. [Operations](docs/operations.md) covers monitoring, backup and recovery. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning.
+The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. [Operations](docs/operations.md) covers monitoring and Linux operations. [Backup and Recovery](docs/backup-recovery.md) defines an isolated Restic restore drill and the evidence required before recovery is claimed as validated. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning.
 
-## First practical automation example
+## Practical automation examples
 
-The [read-only AD inventory script](scripts/README.md) provides a concrete, reviewable starting point for PowerShell automation. It collects domain, forest and domain-controller metadata, supports optional replication-failure queries, and includes mocked Pester tests. It does not change directory objects or write files unless a local report path is explicitly supplied. The tests and live-lab execution are not yet recorded as passed.
+The [read-only AD inventory script](scripts/README.md) provides a concrete PowerShell automation example. It collects domain, forest and domain-controller metadata, supports optional replication-failure queries, and includes mocked Pester tests. It does not change directory objects or write files unless a local report path is explicitly supplied.
+
+The [disposable Restic restore drill](scripts/Run-AstraResticRestoreDrill.sh) provides a Linux recovery exercise that creates its own temporary repository and data, runs a repository check, simulates loss, restores into an isolated location and compares SHA-256 checksums. A successful disposable drill does not prove that the live Astra backup repository or application stack is recoverable.
 
 ## Getting started
 
