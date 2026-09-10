@@ -46,3 +46,7 @@ inventory.local.*
 Thumbs.db
 .vscode/
 .idea/
+
+# Local Bicep deployment parameters
+main.bicepparam
+*.bicepparam.local
