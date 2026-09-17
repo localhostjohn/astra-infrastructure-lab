@@ -38,6 +38,20 @@ A reusable [Discord Server Bootstrapper](tools/discord-server-bootstrapper/READM
 
 See the [detailed evidence checklist and controlled outage plan](evidence/portfolio-evidence-checklist.md) for completed evidence, remaining checks, safety gates and acceptance criteria.
 
+## Astra Engineering Journal
+
+The [Astra Engineering Journal](docs/engineering-journal/README.md) records the reasoning behind significant changes as the lab evolves. It complements the stable documentation and reviewed evidence by capturing problems, constraints, options considered, architecture decisions, experiments, measurements, failures, lessons learned and next actions.
+
+The journal includes:
+
+- chronological engineering entries;
+- Architecture Decision Records (ADRs);
+- repeatable experiment records;
+- research notes;
+- periodic engineering reflections.
+
+This creates a traceable path from **problem → decision → implementation → validation → evidence → reflection** while keeping proposed work clearly separate from validated results. It also preserves research-ready material that may later support a degree project or dissertation without claiming that the lab automatically satisfies any academic assessment requirement.
+
 ## Reference architecture
 
 The diagram below is an illustrative portfolio design, not a copy of my actual network. It uses fictional names and addresses. Only the relationships documented as completed should be treated as implemented.
@@ -76,7 +90,14 @@ astra-infrastructure-lab/
 │   ├── operations.md
 │   ├── raspberry-pi-operations.md
 │   ├── validation.md
-│   └── roadmap.md
+│   ├── roadmap.md
+│   └── engineering-journal/
+│       ├── README.md
+│       ├── entries/
+│       ├── decisions/
+│       ├── experiments/
+│       ├── research-notes/
+│       └── reflections/
 ├── scripts/
 │   ├── README.md
 │   └── Get-AstraADHealth.ps1
@@ -106,7 +127,7 @@ This repository intentionally does not contain live deployment secrets, actual A
 
 The emphasis is on infrastructure engineering rather than simply installing products. Each workstream should demonstrate requirements, design choices, implementation, security considerations, evidence of testing, failure handling and lessons learned.
 
-The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. [Operations](docs/operations.md) covers monitoring, backup and recovery. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning. The [Discord Server Bootstrapper](tools/discord-server-bootstrapper/README.md) provides a reusable automation example for configuration-driven service setup.
+The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. [Operations](docs/operations.md) covers monitoring, backup and recovery. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning. The [Engineering Journal](docs/engineering-journal/README.md) preserves the reasoning, decisions, experiments and reflections behind significant changes. The [Discord Server Bootstrapper](tools/discord-server-bootstrapper/README.md) provides a reusable automation example for configuration-driven service setup.
 
 ## First practical automation example
 
