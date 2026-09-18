@@ -97,7 +97,7 @@ The files in this directory document the intended Astra approach. Individual con
 
 ## Inspiration and references
 
-The structure was inspired in part by the idea of using a layered Conditional Access baseline with a stricter managed-device posture and additional controls when BYOD is permitted. The Astra version expands that concept into a broader Intune endpoint-management baseline and deliberately uses its own naming, rollout model and policy catalogue.
+The structure was inspired in part by *My Conditional Access Baseline for Microsoft 365 Business Premium* from Bearded 365 Guy, particularly its separation of a locked-down managed-device posture from additional BYOD controls. The Astra version expands that concept into a broader Intune endpoint-management baseline and deliberately uses its own naming, rollout model, emergency-access approach and policy catalogue rather than reproducing the source baseline.
 
 Reference material should be checked against current Microsoft documentation before implementation:
 
