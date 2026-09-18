@@ -14,6 +14,7 @@ The aim is to develop practical infrastructure skills by building services, unde
 | --- | --- | --- |
 | Windows Server & AD DS | Lab server deployed; domain administration and delegated-account exercises completed | Identity, DNS, OUs, security groups and permissions |
 | Group Policy | Multiple policies configured; USB restriction/exception and shared-drive exercises undertaken | Policy scope, filtering, testing and rollback |
+| Intune & Conditional Access | Astra baseline policy catalogue documented; implementation and validation still pending | Endpoint management, compliance, strong authentication, staged rollout and evidence |
 | Service accounts | Dedicated account/group and scheduled-task exercise completed and validated | Least privilege and non-interactive logon |
 | Azure | Windows Server VM and supporting cloud networking used for lab administration | Compute, virtual networking, access and cost awareness |
 | Raspberry Pi | Pi 5, Docker, Portainer and Tailscale configured; remote access validated | Linux, containers and private remote administration |
@@ -41,6 +42,8 @@ See the [detailed evidence checklist and controlled outage plan](evidence/portfo
 ## Astra Engineering Journal
 
 The [Astra Engineering Journal](docs/engineering-journal/README.md) records the reasoning behind significant changes as the lab evolves. It complements the stable documentation and reviewed evidence by capturing problems, constraints, options considered, architecture decisions, experiments, measurements, failures, lessons learned and next actions.
+
+A new [Astra Intune Baseline](docs/intune/README.md) now defines the proposed endpoint-management and Conditional Access policy stack. It deliberately separates design from validated deployment, with a policy register and rollout/evidence model so future Intune work can be tested safely before automation.
 
 The journal includes:
 
@@ -91,6 +94,12 @@ astra-infrastructure-lab/
 │   ├── raspberry-pi-operations.md
 │   ├── validation.md
 │   ├── roadmap.md
+│   ├── intune/
+│   │   ├── README.md
+│   │   ├── policy-register.md
+│   │   ├── conditional-access-baseline.md
+│   │   ├── device-management-baseline.md
+│   │   └── rollout-validation.md
 │   └── engineering-journal/
 │       ├── README.md
 │       ├── entries/
@@ -127,7 +136,7 @@ This repository intentionally does not contain live deployment secrets, actual A
 
 The emphasis is on infrastructure engineering rather than simply installing products. Each workstream should demonstrate requirements, design choices, implementation, security considerations, evidence of testing, failure handling and lessons learned.
 
-The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. [Operations](docs/operations.md) covers monitoring, backup and recovery. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning. The [Engineering Journal](docs/engineering-journal/README.md) preserves the reasoning, decisions, experiments and reflections behind significant changes. The [Discord Server Bootstrapper](tools/discord-server-bootstrapper/README.md) provides a reusable automation example for configuration-driven service setup.
+The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. The [Astra Intune Baseline](docs/intune/README.md) documents the proposed Conditional Access, compliance, endpoint-security, update, application and BYOD controls together with a staged validation model. [Operations](docs/operations.md) covers monitoring, backup and recovery. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning. The [Engineering Journal](docs/engineering-journal/README.md) preserves the reasoning, decisions, experiments and reflections behind significant changes. The [Discord Server Bootstrapper](tools/discord-server-bootstrapper/README.md) provides a reusable automation example for configuration-driven service setup.
 
 ## First practical automation example
 
@@ -152,6 +161,8 @@ For Windows Server work, start with a disposable VM and a lab-only directory. Fo
 - [Microsoft Learn: Active Directory Domain Services](https://learn.microsoft.com/windows-server/identity/ad-ds/)
 - [Microsoft Learn: Azure](https://learn.microsoft.com/azure/)
 - [Microsoft Learn: Microsoft Entra](https://learn.microsoft.com/entra/)
+- [Microsoft Learn: Microsoft Intune](https://learn.microsoft.com/mem/intune/)
+- [Microsoft Learn: Conditional Access](https://learn.microsoft.com/entra/identity/conditional-access/)
 - [Docker documentation](https://docs.docker.com/)
 - [Tailscale documentation](https://tailscale.com/kb/)
 - [Prometheus documentation](https://prometheus.io/docs/)
