@@ -26,13 +26,19 @@ Review Microsoft Entra prerequisites, UPN design, synchronisation scope, licensi
 
 **Evidence:** Design decisions, sync scope and end-to-end identity tests.
 
-## 5. Infrastructure as code
+## 5. Intune and endpoint management
+
+Build the Astra Intune baseline in a controlled lab scope. Start with policy inventory and naming, then validate Conditional Access, Windows compliance, endpoint security, update rings and selected application-management controls through pilot groups. Treat BYOD as a separate extension rather than weakening the managed-device baseline. Capture positive and negative tests, conflicts, rollback and sanitised evidence before marking any control as validated.
+
+**Evidence:** Policy register, report-only/audit results, pilot test records, effective device state, rollback notes and sanitised screenshots or exports.
+
+## 6. Infrastructure as code
 
 Create a small isolated Azure deployment with Terraform or Bicep. Use version control, parameterised configuration, validation and a documented teardown. Avoid live credentials and expensive resources; review cost and permissions before deployment.
 
 **Evidence:** Reviewed templates, deployment output, validation and cleanup record.
 
-## 6. Operations and recovery
+## 7. Operations and recovery
 
 Define monitoring checks and alerts, document container updates, and perform a full backup/restore test with disposable data. Record failure scenarios and recovery time. Consider a separate backup destination and restore automation only after the basic workflow is proven.
 
