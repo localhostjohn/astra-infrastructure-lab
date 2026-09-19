@@ -598,3 +598,51 @@ This started as a simple printer reliability problem but became a useful infrast
 - separating client, print-server, transport and hardware faults
 
 The key lesson was to isolate each layer independently rather than assuming a job marked "completed" by Windows or CUPS meant the printer had physically produced output.
+
+
+---
+
+## 19. Tailscale End-to-End Validation
+
+The Windows CUPS queue was recreated using the Pi's Tailscale IP:
+
+```text
+http://100.76.159.33:631/printers/Canon-TR4500
+```
+
+Windows created the queue as:
+
+```text
+Name          : Canon-TR4500 @ astra-pi
+DriverName    : Microsoft IPP Class Driver
+PrinterStatus : Normal
+```
+
+With Tailscale enabled, a Windows test page printed successfully.
+
+This proves the complete remote-capable path:
+
+```text
+Windows
+   ↓ Tailscale
+100.76.159.33:631
+   ↓
+CUPS on astra-pi
+   ↓
+ipp://localhost:60000/ipp/print
+   ↓ ipp-usb
+Canon TR4500 over USB
+```
+
+The direct Canon TCP/IP queue remains available as a local fallback:
+
+```text
+Canon TR4500 series
+→ 192.168.0.19:9100
+```
+
+The preferred Windows queue is now:
+
+```text
+Canon-TR4500 @ astra-pi
+```
