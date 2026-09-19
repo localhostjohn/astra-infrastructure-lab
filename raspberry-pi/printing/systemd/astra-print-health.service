@@ -1,0 +1,8 @@
+[Unit]
+Description=Astra Canon TR4500 print health check
+After=cups.service ipp-usb.service
+Wants=cups.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/astra-print-health
