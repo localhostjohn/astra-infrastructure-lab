@@ -314,9 +314,9 @@ This confirms that driverless capability negotiation is working.
 
 ---
 
-## 11. Current Queue State
+## 11. Current Queue State — Working
 
-The current CUPS queue is:
+The CUPS queue is:
 
 ```text
 Canon-TR4500
@@ -325,20 +325,24 @@ Canon-TR4500
 Current device URI:
 
 ```text
-ipp://Canon%20TR4500%20series%20(USB)._ipp._tcp.local/
+ipp://localhost:60000/ipp/print
 ```
 
-Current architecture:
+This is the local IPP-over-USB endpoint exposed by `ipp-usb`.
+
+Current working architecture:
 
 ```text
-Windows
-   ↓ IPP
+Windows / client
+      ↓ IPP
 CUPS on astra-pi
-   ↓ IPP-over-USB
-Canon TR4500
+      ↓
+ipp://localhost:60000/ipp/print
+      ↓ ipp-usb
+Canon TR4500 over USB
 ```
 
-This is the preferred design at the moment.
+A CUPS test page has now physically printed successfully through this path. The print-server transport is therefore proven working.
 
 ---
 
@@ -415,21 +419,18 @@ Stalled while `ipp-usb` was active.
 
 ---
 
-## 14. Current Stop Point
+## 14. Current Stable State
 
-**STOP HERE until Canon support code 5100 is cleared.**
+The Canon 5100 condition was cleared.
 
-Do not:
+The printer then successfully produced:
 
-- rebuild the CUPS queue
-- reinstall CUPS
-- remove the Windows CUPS printer
-- remove the original Canon direct Windows printer
-- change Docker networking
-- change Tailscale configuration
-- restart or reconfigure unrelated Astra services
+- a nozzle-check page
+- an automatic head-alignment page
+- a Windows test page using the direct Canon TCP/IP queue
+- a CUPS test page from `astra-pi` over IPP-over-USB
 
-The current printer queue should remain:
+The current CUPS queue should therefore be left unchanged:
 
 ```text
 Canon-TR4500
@@ -438,34 +439,40 @@ Canon-TR4500
 with:
 
 ```text
-ipp://Canon%20TR4500%20series%20(USB)._ipp._tcp.local/
+ipp://localhost:60000/ipp/print
 ```
 
----
+The direct Windows fallback queue is also working via:
 
-## 15. Next Steps After Clearing Error 5100
+```text
+192.168.0.19:9100
+RAW / Standard TCP/IP Port
+```
 
-After the Canon is mechanically healthy again:
-
-1. Power the Canon back on.
-2. Confirm no 5100 code is present.
-3. Test the original Canon direct Windows queue.
-4. Send **one** CUPS test page from `astra-pi`.
-5. Confirm the page physically prints.
-6. Send **one** Windows test page to `Canon-TR4500 @ astra-pi`.
-7. Confirm physical output.
-8. Only after the print path is proven stable:
-   - make the Astra Pi queue the preferred/default printer
-   - decide whether the old direct Windows queue should remain as fallback
-   - add Uptime Kuma checks
-   - add self-healing CUPS/queue monitoring
-   - document the service in the Astra engineering journal
+Do not rebuild the working CUPS queue unless a future fault is first diagnosed.
 
 ---
 
-## 16. Planned Hands-Off Monitoring
+## 15. Finalisation Steps
 
-Once printing is stable, add:
+The remaining implementation work is reliability-focused rather than fault-finding:
+
+1. Send one Windows test page through `Canon-TR4500 @ astra-pi`.
+2. Once confirmed, make that queue the preferred/default Windows printer.
+3. Keep the direct Canon TCP/IP queue at `192.168.0.19:9100` as a fallback.
+4. Deploy the repository's self-healing systemd service and timer.
+5. Add an Uptime Kuma TCP monitor for CUPS on port 631.
+6. Do not automatically delete queued jobs during recovery.
+
+---
+
+## 16. Hands-Off Monitoring
+
+The repository now includes a conservative self-healing check under `raspberry-pi/printing/scripts/` and systemd unit templates under `raspberry-pi/printing/systemd/`.
+
+The recovery design intentionally avoids deleting print jobs, rebooting the Pi, or changing networking.
+
+Recommended monitoring:
 
 ### CUPS monitoring
 
@@ -499,6 +506,10 @@ If queue stops accepting jobs:
 If printer is temporarily unavailable:
     retain queued jobs
     do not automatically delete them
+
+If the Canon USB device is absent:
+    log the condition
+    do not restart unrelated services
 ```
 
 Avoid automatically cancelling queued jobs unless they are proven stale or corrupt.
