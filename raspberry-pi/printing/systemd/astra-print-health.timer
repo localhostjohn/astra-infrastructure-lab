@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Astra print health check every 5 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Persistent=true
+Unit=astra-print-health.service
+
+[Install]
+WantedBy=timers.target
