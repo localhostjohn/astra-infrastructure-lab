@@ -646,3 +646,44 @@ The preferred Windows queue is now:
 ```text
 Canon-TR4500 @ astra-pi
 ```
+
+
+---
+
+## 20. Grafana / Prometheus Monitoring
+
+The print health script exports Prometheus textfile metrics to:
+
+```text
+/opt/node-exporter/textfile/astra_print.prom
+```
+
+The existing node-exporter textfile collector exposes:
+
+```text
+astra_print_cups_up
+astra_print_ipp_usb_up
+astra_print_usb_present
+astra_print_queue_enabled
+astra_print_accepting_jobs
+astra_print_uri_ok
+astra_print_pending_jobs
+astra_print_health_last_run_unixtime
+```
+
+These metrics have been verified at the node-exporter endpoint on TCP 9100.
+
+Recommended Grafana row: `Astra Print Server`
+
+Recommended stat panels:
+
+- CUPS Service → `astra_print_cups_up`
+- IPP-USB Service → `astra_print_ipp_usb_up`
+- Canon USB Device → `astra_print_usb_present`
+- Queue Enabled → `astra_print_queue_enabled`
+- Accepting Jobs → `astra_print_accepting_jobs`
+- IPP-over-USB URI → `astra_print_uri_ok`
+- Pending Jobs → `astra_print_pending_jobs`
+- Health Check Age → `time() - astra_print_health_last_run_unixtime`
+
+For binary health metrics, map `1` to healthy/available and `0` to fault/unavailable.
