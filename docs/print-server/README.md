@@ -635,7 +635,7 @@ systemctl list-timers --all | grep astra-print-health
 | Remote IPP printing | Passed |
 | Physical test page | Passed |
 | Automatic printer power-on | Passed |
-| Grafana dashboard | In Progress |
+| Grafana dashboard | Completed |
 
 ---
 
@@ -662,9 +662,9 @@ Evidence will include:
 
 Remaining work:
 
-1. Complete the Grafana printer dashboard.
-2. Add Grafana screenshots to the evidence directory.
-3. Consider Prometheus/Grafana alerting for unhealthy printer states.
+1. Consider Prometheus/Grafana alerting for unhealthy printer states.
+2. Investigate reliable completed-job history before adding print-job counters.
+3. Continue monitoring the print server during normal remote use.
 4. Review CUPS and Tailscale access controls for further hardening.
 5. Investigate reliable CUPS job-history monitoring.
 
