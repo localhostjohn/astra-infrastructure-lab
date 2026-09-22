@@ -16,7 +16,9 @@ PUBLIC_OUTPUT = ROOT / "docs" / "generated"
 PRIVATE_OUTPUT = ROOT / ".astra-docs" / "private"
 
 IPV4_RE = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
-IPV6_RE = re.compile(r"(?<![0-9A-Fa-f:])(?:[0-9A-Fa-f]{0,4}:){2,7}[0-9A-Fa-f]{0,4}(?![0-9A-Fa-f:])")
+IPV6_RE = re.compile(
+    r"(?<![0-9A-Fa-f:])(?=[0-9A-Fa-f:]*[A-Fa-f])(?:[0-9A-Fa-f]{0,4}:){2,7}[0-9A-Fa-f]{0,4}(?![0-9A-Fa-f:])"
+)
 MAC_RE = re.compile(r"\b(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}\b")
 LONG_HEX_RE = re.compile(r"\b[0-9A-Fa-f]{12,64}\b")
 ACCOUNT_RE = re.compile(r"\b[^\s@]+@(?=\s|$)")
@@ -101,6 +103,15 @@ def sanitize_text(value: str) -> str:
     value = LONG_HEX_RE.sub("<ID_REDACTED>", value)
     value = ACCOUNT_RE.sub("<ACCOUNT_REDACTED>", value)
     return value
+
+
+def validate_sanitizer() -> None:
+    """Fail safely if core redaction behaviour regresses."""
+    timestamp = "2026-09-22T22:00:31.388283+00:00"
+    if sanitize_text(timestamp) != timestamp:
+        raise RuntimeError("Sanitizer regression: ISO timestamp was altered.")
+    if "<IPV6_REDACTED>" not in sanitize_text("peer fd7a:115c:a1e0::1 active"):
+        raise RuntimeError("Sanitizer regression: IPv6 address was not redacted.")
 
 
 def sanitize(obj: Any) -> Any:
