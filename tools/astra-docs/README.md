@@ -2,9 +2,9 @@
 
 A read-only documentation engine for the Astra Infrastructure Lab.
 
-## v0.2 scope
+## v0.3 scope
 
-The collector discovers the Raspberry Pi host, Linux networking, storage, Docker and Tailscale. It deliberately separates raw discovery from public-safe documentation.
+The collector discovers the Raspberry Pi host, Linux networking, storage, Docker and Tailscale, then separates private raw discovery from public-safe documentation.
 
 Run on `astra-pi` from the repository root:
 
@@ -14,7 +14,7 @@ python3 tools/astra-docs/astra_docs.py
 
 ## Output model
 
-Private raw discovery is written locally to:
+Private raw discovery:
 
 ```text
 .astra-docs/private/inventory.json
@@ -22,19 +22,27 @@ Private raw discovery is written locally to:
 
 The entire `.astra-docs/` directory is Git-ignored and must never be committed.
 
-Public-safe output is written to:
+Public-safe output:
 
 ```text
 docs/generated/
 ├── sanitized-inventory.json
-└── astra-runbook.md
+├── astra-runbook.md
+└── astra-topology.md
 ```
 
-The runbook is generated from the sanitised inventory only.
+## v0.3 improvements
+
+- Docker collection is allow-listed to container name, image, status, ports and network membership.
+- Docker labels, Compose paths, container IDs and unrelated image metadata are excluded from the public model.
+- The runbook renders Docker containers as a readable Markdown table.
+- `astra-topology.md` generates a Mermaid diagram from observed Docker network membership.
+- Topology generation does not invent application dependencies.
+- The Markdown renderer now emits real line breaks rather than escaped newline text.
 
 ## Sanitisation
 
-v0.2 redacts common infrastructure identifiers including IPv4, IPv6, MAC addresses, long machine/container/hash identifiers, Tailscale account identifiers and Tailscale device names.
+The public pipeline redacts common infrastructure identifiers including IPv4, IPv6, MAC addresses, long machine/container/hash identifiers, Tailscale account identifiers and Tailscale device names.
 
 Sanitisation is a safety control, not a guarantee. Review generated files before publishing.
 
@@ -52,5 +60,5 @@ Sanitisation is a safety control, not a guarantee. Review generated files before
 - Windows Server / Active Directory
 - DNS and service dependencies
 - Bicep desired-state comparison
-- diagram generation
+- richer deterministic topology
 - scheduled documentation refresh
