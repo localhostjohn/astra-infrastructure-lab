@@ -1,0 +1,186 @@
+{
+  "metadata": {
+    "generated_utc": "2026-09-22T21:01:25.569644+00:00",
+    "collector_version": "0.3.0",
+    "mode": "read-only",
+    "public_output": "sanitized"
+  },
+  "discovery": {
+    "hostname": {
+      "available": true,
+      "command": "hostnamectl",
+      "returncode": 0,
+      "output": "Static hostname: astra-pi\n       Icon name: computer\n      Machine ID: <ID_REDACTED>\n         Boot ID: <ID_REDACTED>\nOperating System: Debian GNU/Linux 13 (trixie)\n          Kernel: Linux 6.18.39+rpt-rpi-2712\n    Architecture: arm64",
+      "error": ""
+    },
+    "os_release": {
+      "available": true,
+      "command": "cat /etc/os-release",
+      "returncode": 0,
+      "output": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"",
+      "error": ""
+    },
+    "interfaces": {
+      "available": true,
+      "command": "ip -brief address",
+      "returncode": 0,
+      "output": "lo               UNKNOWN        <IPV4_REDACTED>/8 ::1/128 \neth0             UP             <IPV4_REDACTED>/24 <IPV6_REDACTED>/128 <IPV6_REDACTED>/64 <IPV6_REDACTED>/64 \nwlan0            DOWN           \ntailscale0       UNKNOWN        <IPV4_REDACTED>/32 <IPV6_REDACTED>/128 <IPV6_REDACTED>/64 \nbr-<ID_REDACTED>  UP             <IPV4_REDACTED>/16 <IPV6_REDACTED>/64 \nbr-<ID_REDACTED>  UP             <IPV4_REDACTED>/16 <IPV6_REDACTED>/64 \nbr-<ID_REDACTED>  UP             <IPV4_REDACTED>/16 <IPV6_REDACTED>/64 \nbr-<ID_REDACTED>  UP             <IPV4_REDACTED>/16 <IPV6_REDACTED>/64 \ndocker0          UP             <IPV4_REDACTED>/16 <IPV6_REDACTED>/64 \nveth9d1db05@if2  UP             <IPV6_REDACTED>/64 \nvethc99d865@if2  UP             <IPV6_REDACTED>/64 \nvetha12e413@if2  UP             <IPV6_REDACTED>/64 \nveth6c2f5a4@if2  UP             <IPV6_REDACTED>/64 \nveth4dd7b38@if2  UP             <IPV6_REDACTED>/64 \nveth06cd123@if2  UP             <IPV6_REDACTED>/64 \nveth01b3740@if2  UP             <IPV6_REDACTED>/64 \nveth9b582c7@if2  UP             <IPV6_REDACTED>/64",
+      "error": ""
+    },
+    "routes": {
+      "available": true,
+      "command": "ip route",
+      "returncode": 0,
+      "output": "default via <IPV4_REDACTED> dev eth0 proto static metric 100 \n<IPV4_REDACTED>/16 dev docker0 proto kernel scope link src <IPV4_REDACTED> \n<IPV4_REDACTED>/16 dev br-<ID_REDACTED> proto kernel scope link src <IPV4_REDACTED> \n<IPV4_REDACTED>/16 dev br-<ID_REDACTED> proto kernel scope link src <IPV4_REDACTED> \n<IPV4_REDACTED>/16 dev br-<ID_REDACTED> proto kernel scope link src <IPV4_REDACTED> \n<IPV4_REDACTED>/16 dev br-<ID_REDACTED> proto kernel scope link src <IPV4_REDACTED> \n<IPV4_REDACTED>/24 dev eth0 proto kernel scope link src <IPV4_REDACTED> metric 100",
+      "error": ""
+    },
+    "neighbours": {
+      "available": true,
+      "command": "ip neigh",
+      "returncode": 0,
+      "output": "<IPV4_REDACTED> dev eth0 lladdr <MAC_REDACTED> STALE \n<IPV4_REDACTED> dev eth0 lladdr <MAC_REDACTED> STALE \n<IPV4_REDACTED> dev br-<ID_REDACTED> lladdr <MAC_REDACTED> STALE \n<IPV4_REDACTED> dev eth0 FAILED \n<IPV4_REDACTED> dev eth0 FAILED \n<IPV4_REDACTED> dev eth0 lladdr <MAC_REDACTED> DELAY \n<IPV4_REDACTED> dev br-<ID_REDACTED> lladdr <MAC_REDACTED> STALE \n<IPV4_REDACTED> dev eth0 FAILED \n<IPV4_REDACTED> dev eth0 lladdr <MAC_REDACTED> DELAY \n<IPV4_REDACTED> dev br-<ID_REDACTED> lladdr <MAC_REDACTED> STALE \n<IPV4_REDACTED> dev eth0 lladdr <MAC_REDACTED> STALE \n<IPV4_REDACTED> dev eth0 lladdr <MAC_REDACTED> REACHABLE \n<IPV4_REDACTED> dev eth0 lladdr <MAC_REDACTED> STALE \n<IPV4_REDACTED> dev eth0 lladdr <MAC_REDACTED> DELAY \n<IPV4_REDACTED> dev eth0 lladdr <MAC_REDACTED> DELAY \n<IPV4_REDACTED> dev br-<ID_REDACTED> lladdr <MAC_REDACTED> REACHABLE \n<IPV4_REDACTED> dev docker0 lladdr <MAC_REDACTED> STALE \n<IPV4_REDACTED> dev eth0 FAILED \n<IPV4_REDACTED> dev eth0 lladdr <MAC_REDACTED> DELAY \n<IPV4_REDACTED> dev eth0 FAILED \n<IPV4_REDACTED> dev br-<ID_REDACTED> lladdr <MAC_REDACTED> STALE \n<IPV4_REDACTED> dev br-<ID_REDACTED> lladdr <MAC_REDACTED> STALE \n<IPV6_REDACTED> dev eth0 lladdr <MAC_REDACTED> router STALE \n<IPV6_REDACTED> dev eth0 lladdr <MAC_REDACTED> STALE \n<IPV6_REDACTED> dev eth0 lladdr <MAC_REDACTED> STALE \n<IPV6_REDACTED> dev eth0 router FAILED \n<IPV6_REDACTED> dev eth0 lladdr <MAC_REDACTED> STALE \n<IPV6_REDACTED> dev eth0 lladdr <MAC_REDACTED> STALE \n<IPV6_REDACTED> dev eth0 lladdr <MAC_REDACTED> STALE \n<IPV6_REDACTED> dev eth0 lladdr <MAC_REDACTED> STALE \n<IPV6_REDACTED> dev eth0 lladdr <MAC_REDACTED> STALE \n<IPV6_REDACTED> dev eth0 lladdr <MAC_REDACTED> STALE \n<IPV6_REDACTED> dev eth0 lladdr <MAC_REDACTED> STALE",
+      "error": ""
+    },
+    "storage": {
+      "available": true,
+      "command": "lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINTS",
+      "returncode": 0,
+      "output": "NAME         SIZE FSTYPE MOUNTPOINTS\nloop0          2G swap   \nmmcblk0     29.5G        \n\u251c\u2500mmcblk0p1  512M vfat   /boot/firmware\n\u2514\u2500mmcblk0p2   29G ext4   /\nzram0          2G swap   [SWAP]",
+      "error": ""
+    },
+    "filesystems": {
+      "available": true,
+      "command": "df -hT",
+      "returncode": 0,
+      "output": "Filesystem     Type      Size  Used Avail Use% Mounted on\nudev           devtmpfs  2.0G     0  2.0G   0% /dev\ntmpfs          tmpfs     810M   37M  774M   5% /run\n/dev/mmcblk0p2 ext4       29G   13G   15G  47% /\ntmpfs          tmpfs     2.0G     0  2.0G   0% /dev/shm\ntmpfs          tmpfs     5.0M   48K  5.0M   1% /run/lock\ntmpfs          tmpfs     1.0M     0  1.0M   0% /run/credentials/systemd-journald.service\ntmpfs          tmpfs     2.0G     0  2.0G   0% /tmp\n/dev/mmcblk0p1 vfat      505M   66M  439M  14% /boot/firmware\ntmpfs          tmpfs     1.0M     0  1.0M   0% /run/credentials/getty@tty1.service\ntmpfs          tmpfs     1.0M     0  1.0M   0% /run/credentials/serial-getty@ttyAMA10.service\ntmpfs          tmpfs     405M   32K  405M   1% /run/user/1000",
+      "error": ""
+    },
+    "docker_networks": {
+      "available": true,
+      "command": "docker network ls --format {{.Name}}\t{{.Driver}}\t{{.Scope}}",
+      "returncode": 0,
+      "output": "authentik_default\tbridge\tlocal\nbridge\tbridge\tlocal\nhomepage_default\tbridge\tlocal\nhost\thost\tlocal\nmonitoring_default\tbridge\tlocal\nnone\tnull\tlocal\nuptime-kuma_default\tbridge\tlocal",
+      "error": ""
+    },
+    "docker_volumes": {
+      "available": true,
+      "command": "docker volume ls --format {{.Name}}\t{{.Driver}}",
+      "returncode": 0,
+      "output": "authentik_authentik-media\tlocal\nauthentik_authentik-postgresql-data\tlocal\nauthentik_authentik-templates\tlocal\nauthentik_database\tlocal\nmonitoring_grafana-data\tlocal\nmonitoring_prometheus-data\tlocal\nportainer_data\tlocal\nuptime-kuma_uptime-kuma-data\tlocal",
+      "error": ""
+    },
+    "tailscale": {
+      "available": true,
+      "command": "tailscale status",
+      "returncode": 0,
+      "output": "<IPV4_REDACTED>  <DEVICE_REDACTED>  <ACCOUNT_REDACTED>  linux  -\n<IPV4_REDACTED>  <DEVICE_REDACTED>  <ACCOUNT_REDACTED>  windows  active;  direct  <IPV4_REDACTED>:41641,  tx  2023104  rx  2033496\n<IPV4_REDACTED>  <DEVICE_REDACTED>  <ACCOUNT_REDACTED>  iOS  -",
+      "error": ""
+    },
+    "docker_containers": {
+      "available": true,
+      "returncode": 0,
+      "containers": [
+        {
+          "name": "grafana",
+          "image": "grafana/grafana:latest",
+          "status": "Up 3 days",
+          "ports": "<IPV4_REDACTED>:3003->3000/tcp, [::]:3003->3000/tcp",
+          "networks": [
+            "monitoring_default"
+          ]
+        },
+        {
+          "name": "authentik-worker",
+          "image": "ghcr.io/goauthentik/server:2026.8.1",
+          "status": "Up 5 days (healthy)",
+          "ports": "",
+          "networks": [
+            "authentik_default"
+          ]
+        },
+        {
+          "name": "authentik-server",
+          "image": "ghcr.io/goauthentik/server:2026.8.1",
+          "status": "Up 5 days (healthy)",
+          "ports": "<IPV4_REDACTED>:9000->9000/tcp, [::]:9000->9000/tcp, <IPV4_REDACTED>:9449->9443/tcp, [::]:9449->9443/tcp",
+          "networks": [
+            "authentik_default"
+          ]
+        },
+        {
+          "name": "authentik-postgresql",
+          "image": "postgres:16-alpine",
+          "status": "Up 5 days (healthy)",
+          "ports": "5432/tcp",
+          "networks": [
+            "authentik_default"
+          ]
+        },
+        {
+          "name": "adguardhome",
+          "image": "adguard/adguardhome:latest",
+          "status": "Up 5 days",
+          "ports": "",
+          "networks": [
+            "host"
+          ]
+        },
+        {
+          "name": "node-exporter",
+          "image": "prom/node-exporter:latest",
+          "status": "Up 5 days",
+          "ports": "",
+          "networks": [
+            "host"
+          ]
+        },
+        {
+          "name": "prometheus",
+          "image": "prom/prometheus:latest",
+          "status": "Up 5 days",
+          "ports": "<IPV4_REDACTED>:9090->9090/tcp, [::]:9090->9090/tcp",
+          "networks": [
+            "monitoring_default"
+          ]
+        },
+        {
+          "name": "netalertx",
+          "image": "ghcr.io/netalertx/netalertx:latest",
+          "status": "Up 5 days (healthy)",
+          "ports": "",
+          "networks": [
+            "host"
+          ]
+        },
+        {
+          "name": "homepage",
+          "image": "ghcr.io/gethomepage/homepage:latest",
+          "status": "Up 5 days (healthy)",
+          "ports": "<IPV4_REDACTED>:3002->3000/tcp, [::]:3002->3000/tcp",
+          "networks": [
+            "homepage_default"
+          ]
+        },
+        {
+          "name": "uptime-kuma",
+          "image": "louislam/uptime-kuma:latest",
+          "status": "Up 5 days (healthy)",
+          "ports": "<IPV4_REDACTED>:3001->3001/tcp, [::]:3001->3001/tcp",
+          "networks": [
+            "uptime-kuma_default"
+          ]
+        },
+        {
+          "name": "portainer",
+          "image": "portainer/portainer-ce:lts",
+          "status": "Up 5 days",
+          "ports": "8000/tcp, 9000/tcp, <IPV4_REDACTED>:9443->9443/tcp, [::]:9443->9443/tcp",
+          "networks": [
+            "bridge"
+          ]
+        }
+      ],
+      "error": ""
+    }
+  }
+}
