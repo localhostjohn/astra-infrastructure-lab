@@ -13,6 +13,9 @@ terraform.tfvars
 *.auto.tfvars
 .terraform/
 
+# Astra automated documentation private/raw discovery
+.astra-docs/
+
 # Live service data and backups
 *.db
 *.sqlite
