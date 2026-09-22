@@ -108,7 +108,7 @@ def section(title: str, item: dict[str, Any]) -> str:
         body = item.get("error") or "Command returned a non-zero exit code."
     else:
         body = item.get("output") or "(no output)"
-    return f"## {title}\n\n\`\`\`text\n{body}\n\`\`\`\n"
+    return f"## {title}\\n\\n```text\\n{body}\\n```\\n"
 
 
 def render_runbook(data: dict[str, Any]) -> str:
