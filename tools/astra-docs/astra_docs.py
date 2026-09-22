@@ -24,8 +24,7 @@ ACCOUNT_RE = re.compile(r"\b[^\s@]+@(?=\s|$)")
 
 def run(command: list[str]) -> dict[str, Any]:
     """Run a read-only command and capture its result without failing the scan."""
-    executable = command[0]
-    if shutil.which(executable) is None:
+    if shutil.which(command[0]) is None:
         return {"available": False, "command": " ".join(command), "output": ""}
 
     proc = subprocess.run(command, capture_output=True, text=True, check=False)
@@ -38,6 +37,35 @@ def run(command: list[str]) -> dict[str, Any]:
     }
 
 
+def collect_docker_containers() -> dict[str, Any]:
+    """Collect only operational Docker fields useful to public documentation."""
+    result = run([
+        "docker", "ps", "--format",
+        "{{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}\t{{.Networks}}",
+    ])
+    if not result.get("available") or result.get("returncode", 0) != 0:
+        return result
+
+    containers = []
+    for line in result.get("output", "").splitlines():
+        fields = line.split("\t")
+        fields += [""] * (5 - len(fields))
+        containers.append({
+            "name": fields[0],
+            "image": fields[1],
+            "status": fields[2],
+            "ports": fields[3],
+            "networks": [n for n in fields[4].split(",") if n],
+        })
+
+    return {
+        "available": True,
+        "returncode": 0,
+        "containers": containers,
+        "error": result.get("error", ""),
+    }
+
+
 def collect() -> dict[str, Any]:
     commands = {
         "hostname": ["hostnamectl"],
@@ -47,20 +75,21 @@ def collect() -> dict[str, Any]:
         "neighbours": ["ip", "neigh"],
         "storage": ["lsblk", "-o", "NAME,SIZE,FSTYPE,MOUNTPOINTS"],
         "filesystems": ["df", "-hT"],
-        "docker_containers": ["docker", "ps", "--format", "{{json .}}"],
-        "docker_networks": ["docker", "network", "ls"],
-        "docker_volumes": ["docker", "volume", "ls"],
+        "docker_networks": ["docker", "network", "ls", "--format", "{{.Name}}\t{{.Driver}}\t{{.Scope}}"],
+        "docker_volumes": ["docker", "volume", "ls", "--format", "{{.Name}}\t{{.Driver}}"],
         "tailscale": ["tailscale", "status"],
     }
+    discovery = {name: run(cmd) for name, cmd in commands.items()}
+    discovery["docker_containers"] = collect_docker_containers()
 
     return {
         "metadata": {
             "generated_utc": datetime.now(timezone.utc).isoformat(),
-            "collector_version": "0.2.0",
+            "collector_version": "0.3.0",
             "mode": "read-only",
             "public_output": "sanitized",
         },
-        "discovery": {name: run(cmd) for name, cmd in commands.items()},
+        "discovery": discovery,
     }
 
 
@@ -90,7 +119,6 @@ def sanitize_tailscale(data: dict[str, Any]) -> None:
     output = item.get("output")
     if not isinstance(output, str):
         return
-
     safe_lines = []
     for line in output.splitlines():
         fields = line.split()
@@ -101,14 +129,62 @@ def sanitize_tailscale(data: dict[str, Any]) -> None:
     item["output"] = "\n".join(safe_lines)
 
 
-def section(title: str, item: dict[str, Any]) -> str:
+def command_section(title: str, item: dict[str, Any]) -> str:
     if not item.get("available", False):
         body = "Command unavailable on this host."
     elif item.get("returncode", 0) != 0:
         body = item.get("error") or "Command returned a non-zero exit code."
     else:
         body = item.get("output") or "(no output)"
-    return f"## {title}\\n\\n```text\\n{body}\\n```\\n"
+    return f"## {title}\n\n```text\n{body}\n```\n"
+
+
+def docker_table(item: dict[str, Any]) -> str:
+    containers = item.get("containers", [])
+    if not containers:
+        return "## Docker Containers\n\nNo running containers were discovered.\n"
+    lines = [
+        "## Docker Containers",
+        "",
+        "| Container | Image | Status | Networks | Ports |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for c in containers:
+        networks = ", ".join(c.get("networks", [])) or "—"
+        ports = c.get("ports") or "—"
+        lines.append(
+            f"| {c.get('name','')} | {c.get('image','')} | {c.get('status','')} | {networks} | {ports} |"
+        )
+    return "\n".join(lines) + "\n"
+
+
+def render_topology(data: dict[str, Any]) -> str:
+    containers = data["discovery"]["docker_containers"].get("containers", [])
+    lines = [
+        "# Astra Raspberry Pi — Generated Topology",
+        "",
+        "> Generated from the sanitised v0.3 discovery model. Connections shown are Docker network memberships observed by the collector.",
+        "",
+        "```mermaid",
+        "flowchart LR",
+        '    LAN["LAN / Ethernet"] --> PI["astra-pi"]',
+        '    TS["Tailscale"] --> PI',
+    ]
+    networks: dict[str, list[str]] = {}
+    for c in containers:
+        for network in c.get("networks", []):
+            networks.setdefault(network, []).append(c.get("name", "container"))
+
+    for index, (network, members) in enumerate(sorted(networks.items()), start=1):
+        net_id = f"N{index}"
+        lines.append(f'    PI --> {net_id}["Docker: {network}"]')
+        for member_index, member in enumerate(sorted(members), start=1):
+            node_id = f"{net_id}C{member_index}"
+            safe_label = member.replace('"', "'")
+            lines.append(f'    {net_id} --> {node_id}["{safe_label}"]')
+
+    lines.extend(["```", "", "Only observed Docker network membership is represented; application-level dependencies are not inferred.", ""])
+    return "\n".join(lines)
 
 
 def render_runbook(data: dict[str, Any]) -> str:
@@ -117,25 +193,25 @@ def render_runbook(data: dict[str, Any]) -> str:
     parts = [
         "# Astra Infrastructure Runbook — Generated Public Snapshot\n",
         f"> Generated automatically at {generated}. Collector mode: **read-only**.\n",
-        "This public snapshot is rendered only from sanitised discovery data. "
-        "Raw discovery remains local in a Git-ignored private directory.\n",
-        section("Host", d["hostname"]),
-        section("Operating System", d["os_release"]),
-        section("Network Interfaces", d["interfaces"]),
-        section("Routing Table", d["routes"]),
-        section("Network Neighbours", d["neighbours"]),
-        section("Block Storage", d["storage"]),
-        section("Filesystem Usage", d["filesystems"]),
-        section("Docker Containers", d["docker_containers"]),
-        section("Docker Networks", d["docker_networks"]),
-        section("Docker Volumes", d["docker_volumes"]),
-        section("Tailscale", d["tailscale"]),
+        "This public snapshot is rendered only from sanitised discovery data. Raw discovery remains local in a Git-ignored private directory.\n",
+        command_section("Host", d["hostname"]),
+        command_section("Operating System", d["os_release"]),
+        command_section("Network Interfaces", d["interfaces"]),
+        command_section("Routing Table", d["routes"]),
+        command_section("Network Neighbours", d["neighbours"]),
+        command_section("Block Storage", d["storage"]),
+        command_section("Filesystem Usage", d["filesystems"]),
+        docker_table(d["docker_containers"]),
+        command_section("Docker Networks", d["docker_networks"]),
+        command_section("Docker Volumes", d["docker_volumes"]),
+        command_section("Tailscale", d["tailscale"]),
         "## Operational Notes\n\n"
         "- This snapshot is evidence of observed state, not desired state.\n"
         "- Validate critical services after any infrastructure change.\n"
         "- Never commit the private raw inventory.\n"
         "- Review generated public artefacts before publishing.\n"
-        "- Future milestones will add service dependencies, recovery procedures, Azure/AD discovery and diagrams.\n",
+        "- The topology represents observed Docker network membership only.\n"
+        "- Future milestones will add service dependencies, recovery procedures, Azure/AD discovery and desired-state comparison.\n",
     ]
     return "\n".join(parts)
 
@@ -148,21 +224,17 @@ def main() -> None:
     safe_inventory = sanitize(inventory)
     sanitize_tailscale(safe_inventory)
 
-    (PRIVATE_OUTPUT / "inventory.json").write_text(
-        json.dumps(inventory, indent=2), encoding="utf-8"
-    )
-    (PUBLIC_OUTPUT / "sanitized-inventory.json").write_text(
-        json.dumps(safe_inventory, indent=2), encoding="utf-8"
-    )
-    (PUBLIC_OUTPUT / "astra-runbook.md").write_text(
-        render_runbook(safe_inventory), encoding="utf-8"
-    )
+    (PRIVATE_OUTPUT / "inventory.json").write_text(json.dumps(inventory, indent=2), encoding="utf-8")
+    (PUBLIC_OUTPUT / "sanitized-inventory.json").write_text(json.dumps(safe_inventory, indent=2), encoding="utf-8")
+    (PUBLIC_OUTPUT / "astra-runbook.md").write_text(render_runbook(safe_inventory), encoding="utf-8")
+    (PUBLIC_OUTPUT / "astra-topology.md").write_text(render_topology(safe_inventory), encoding="utf-8")
 
     legacy_raw = PUBLIC_OUTPUT / "inventory.json"
     if legacy_raw.exists():
         legacy_raw.unlink()
 
     print("Astra documentation collection complete.")
+    print(f"Collector version: {inventory['metadata']['collector_version']}")
     print(f"Private raw inventory: {PRIVATE_OUTPUT / 'inventory.json'}")
     print(f"Public-safe output: {PUBLIC_OUTPUT}")
     print("Review generated public artefacts before committing them.")
