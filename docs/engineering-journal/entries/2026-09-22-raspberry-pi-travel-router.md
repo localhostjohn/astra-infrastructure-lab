@@ -1,7 +1,7 @@
 # Raspberry Pi travel router — build and validation
 
 **Date:** 22–23 September 2026  
-**Status:** Core build complete — standalone operation and cold-boot persistence validated
+**Status:** Core build and Travelmate upstream switching complete — standalone, cold-boot and failback validated
 
 ## Objective
 
@@ -18,6 +18,7 @@ Raspberry Pi 3 / OpenWrt
 LAN: 10.77.0.0/24
 Router: 10.77.0.1
     |
+    | Travelmate / trm_wwan
     | USB Wi-Fi client (5 GHz where available)
     v
 Hotel / guest / upstream Wi-Fi
@@ -32,12 +33,15 @@ Remote access to the main Astra home lab remains a separate Tailscale layer rath
 
 - Raspberry Pi 3 Model B Rev 1.2
 - OpenWrt 24.10.7
+- Travelmate 2.2.1-r6 with LuCI integration
 - Built-in Cypress 2.4 GHz Wi-Fi used for the private access point
 - USB AC1200 adapter using the Realtek RTL8822BU family, used for upstream Wi-Fi
 - OpenWrt LAN address: `10.77.0.1/24`
 - Private SSID: `Astra-Travel`
 - Built-in AP fixed to channel 1
 - USB WAN validated on 5 GHz
+- Travelmate logical uplink: `trm_wwan`, DHCP, metric 100, WAN firewall zone
+- Travelmate radio selection restricted to `radio1`
 
 No wireless passwords or other credentials are stored in this repository.
 
@@ -60,7 +64,17 @@ No wireless passwords or other credentials are stored in this repository.
 15. Repeated validation after reboot and after a full power-off/power-on.
 16. Removed the Ethernet recovery connection and validated fully standalone operation.
 17. Rotated the `Astra-Travel` Wi-Fi password after testing; no credential is recorded here.
-18. Confirmed the USB WAN radio can scan for alternative upstream networks while the private AP remains active.
+18. Installed Travelmate 2.2.1-r6 and its LuCI integration.
+19. Created the Travelmate `trm_wwan` DHCP interface with metric 100 in the WAN firewall zone.
+20. Restricted Travelmate to the USB upstream radio (`radio1`) so the built-in radio remains dedicated to the private AP.
+21. Migrated the existing upstream station from `wwan_usb` to `trm_wwan`.
+22. Removed the obsolete `wwan_usb` interface and firewall-zone reference after validating the migration.
+23. Validated Travelmate recovery after a full cold boot with no Ethernet connected.
+24. Added a second phone hotspot as an alternative upstream and successfully switched `radio1` to it while clients remained on `Astra-Travel`.
+25. Validated LuCI and normal Internet access through the alternative hotspot with client mobile-data fallback disabled.
+26. Turned off the active hotspot to simulate an upstream disappearing unexpectedly.
+27. Observed Travelmate detect loss of signal and automatically recover to the saved home uplink in approximately 48 seconds.
+28. Revalidated normal web access after automatic recovery.
 
 ## Fault investigation and fix
 
@@ -98,6 +112,49 @@ phy1-ap0: AP-ENABLED
 
 The fixed channel persisted through subsequent reboot and cold-boot tests.
 
+## Travelmate migration
+
+Travelmate was introduced after the core AP/WAN design was stable. The wizard created a dedicated upstream interface:
+
+```text
+network.trm_wwan.proto='dhcp'
+network.trm_wwan.metric='100'
+```
+
+The interface was placed in the existing WAN firewall zone. Travelmate was then restricted to `radio1`, preventing it from interfering with the built-in `radio0` access point.
+
+The existing saved upstream station was migrated from the original `wwan_usb` network to `trm_wwan`. Once Internet access and Travelmate status were confirmed, the obsolete `wwan_usb` interface and its WAN-zone membership were removed.
+
+The resulting separation is:
+
+```text
+radio0 -> Astra-Travel -> LAN 10.77.0.0/24
+radio1 -> Travelmate -> trm_wwan -> WAN zone -> upstream Wi-Fi
+```
+
+## Upstream switching and failback validation
+
+A second Android phone hotspot was used as a stand-in for hotel or guest Wi-Fi.
+
+Both the home uplink and the temporary hotspot were stored as Travelmate stations. The home uplink was disabled for the changeover test and Travelmate was restarted. Travelmate subsequently logged a successful connection to the alternative hotspot.
+
+While the hotspot was active:
+
+- the test client remained associated with `Astra-Travel`;
+- LuCI remained reachable at `10.77.0.1`;
+- normal Internet browsing succeeded with cellular connectivity assistance disabled on the test client.
+
+For failback testing, both saved uplinks were enabled and the active hotspot was then turned off without making any OpenWrt changes. Travelmate logged:
+
+```text
+20:23:34  no signal from uplink
+20:24:22  connected to uplink 'radio1/InvolveRestrictedAccess/-'
+```
+
+This is approximately 48 seconds from loss detection to successful recovery. Normal web access through `Astra-Travel` was then confirmed again.
+
+This validates that client devices can remain on a consistent private LAN while the travel router changes or recovers its external Wi-Fi connection.
+
 ## Validation results
 
 A test iPhone joined `Astra-Travel` and received:
@@ -116,7 +173,7 @@ Final standalone acceptance testing was performed with **no Ethernet cable conne
 - The client reconnected using the rotated password.
 - OpenWrt remained reachable wirelessly at `10.77.0.1`.
 - External Internet access succeeded.
-- The USB AC1200 adapter remained available for upstream Wi-Fi.
+- Travelmate automatically recovered the saved upstream through `radio1`.
 
 ## Safety decision
 
@@ -124,9 +181,11 @@ LAN DHCP was deliberately disabled while the Pi Ethernet interface was connected
 
 Once OpenWrt LAN DHCP was enabled, the Pi was not connected to the normal home Ethernet LAN. Direct Pi-to-workstation Ethernet was used only as an isolated recovery path.
 
+Captive-portal registration, terms, MFA and other network access controls will be completed normally. The travel router is not intended to bypass guest-network controls.
+
 ## Acceptance criteria
 
-The core travel-router acceptance criteria are now met:
+The travel-router acceptance criteria are now met:
 
 - [x] Private `Astra-Travel` SSID starts automatically.
 - [x] Client receives an OpenWrt DHCP lease.
@@ -136,19 +195,25 @@ The core travel-router acceptance criteria are now met:
 - [x] Configuration survives reboot.
 - [x] Configuration survives full power-off/power-on.
 - [x] Router operates standalone with no Ethernet connection.
-- [x] USB WAN can scan for alternative upstream Wi-Fi while the private AP remains available.
+- [x] Travelmate manages the USB upstream through `trm_wwan`.
+- [x] Travelmate cold-boot recovery is successful.
+- [x] USB WAN can join a different upstream while the private AP remains available.
+- [x] Client management and Internet access work through the alternative upstream.
+- [x] Travelmate automatically recovers to another saved uplink when the active upstream disappears.
+- [x] Internet access remains functional after automatic failback.
 
 ## Remaining travel-environment validation
 
-The core router is complete. The following are useful follow-up tests rather than blockers:
+The core router and Travelmate switching behaviour are complete. Remaining work is real-world validation rather than a blocker:
 
-1. Join a different phone/hotspot or guest Wi-Fi using the USB WAN radio while remaining connected to `Astra-Travel`.
-2. Validate a real captive-portal workflow on an authorised guest network.
-3. Document any MAC-binding/cloning requirements encountered by captive portals.
-4. Install and validate Tailscale on the travel MacBook for secure access back to the main Astra environment.
+1. Validate a real captive-portal workflow on an authorised guest network.
+2. Document any MAC-binding behaviour encountered by captive portals.
+3. Install and validate Tailscale on the travel MacBook for secure access back to the main Astra environment.
 
 ## Lessons learned
 
-This build demonstrates more than creating another Wi-Fi network. It required explicit LAN/WAN separation, safe DHCP handling, third-party USB driver validation, route testing, hostapd troubleshooting, interpretation of ACS failure logs, persistence testing, credential rotation and an isolated recovery path.
+This build demonstrates more than creating another Wi-Fi network. It required explicit LAN/WAN separation, safe DHCP handling, third-party USB driver validation, route testing, hostapd troubleshooting, interpretation of ACS failure logs, persistence testing, credential rotation, upstream lifecycle management and an isolated recovery path.
 
-The most important troubleshooting lesson was that an interface existing in `iw dev` did not prove the AP was usable. Hostapd state and logs identified the actual failure, and replacing automatic channel selection with a fixed validated channel produced repeatable cold-boot behaviour.
+The most important AP troubleshooting lesson was that an interface existing in `iw dev` did not prove the AP was usable. Hostapd state and logs identified the actual failure, and replacing automatic channel selection with a fixed validated channel produced repeatable cold-boot behaviour.
+
+Travelmate testing added a second operational lesson: an immediate status check can show `running (not connected)` while the service is still scanning and associating. Runtime logs provided the authoritative sequence and demonstrated successful alternative-uplink connection and automatic recovery.
