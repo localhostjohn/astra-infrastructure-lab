@@ -1,7 +1,7 @@
 # Raspberry Pi travel router — build and validation
 
-**Date:** 22–23 September 2026  
-**Status:** Core build and Travelmate upstream switching complete — standalone, cold-boot and failback validated
+**Date:** 22–24 September 2026  
+**Status:** Core build, Travelmate upstream switching and configuration cleanup complete — standalone, cold-boot, failback and recovery checkpoint validated
 
 ## Objective
 
@@ -75,6 +75,13 @@ No wireless passwords or other credentials are stored in this repository.
 26. Turned off the active hotspot to simulate an upstream disappearing unexpectedly.
 27. Observed Travelmate detect loss of signal and automatically recover to the saved home uplink in approximately 48 seconds.
 28. Revalidated normal web access after automatic recovery.
+29. Removed the obsolete disabled `radio0` upstream station that still referenced the legacy `wwan` network.
+30. Removed the disabled default `OpenWrt` access point from `radio1`, leaving the USB radio dedicated to Travelmate upstream use.
+31. Removed the now-orphaned `wwan` logical interface and its WAN firewall-zone reference after confirming all active upstream stations use `trm_wwan`.
+32. Rebooted OpenWrt and confirmed `Astra-Travel` returned successfully. A Windows saved-profile association issue was resolved by forgetting and re-adding the SSID; a phone connected normally throughout, confirming the AP itself was healthy.
+33. Confirmed Travelmate returned as `connected (net ok/100)` on `radio1` / `trm_wwan` after reboot.
+34. Revalidated router Internet connectivity with four ICMP probes to `1.1.1.1`; all four succeeded with 0% packet loss.
+35. Created a known-good OpenWrt configuration backup named `astra-travel-openwrt-known-good-2026-09-24.tar.gz`, copied it off `/tmp` to private workstation storage using SCP, and verified the local file size as 7,248 bytes. The archive is intentionally not committed because it may contain credentials.
 
 ## Fault investigation and fix
 
@@ -175,6 +182,20 @@ Final standalone acceptance testing was performed with **no Ethernet cable conne
 - External Internet access succeeded.
 - Travelmate automatically recovered the saved upstream through `radio1`.
 
+## Configuration cleanup and recovery checkpoint — 24 September 2026
+
+After Travelmate failover testing was complete, the saved OpenWrt configuration was reviewed for legacy entries. The disabled built-in-radio upstream station, the disabled default `OpenWrt` AP on the USB radio, and the old `wwan` logical interface/firewall membership were no longer required and were removed. Active upstream configuration remained on `radio1` through `trm_wwan`.
+
+The router was then rebooted. `Astra-Travel` returned, Travelmate reported `connected (net ok/100)`, and the router completed a four-packet test to `1.1.1.1` with 0% loss. This established the cleaned configuration as the new known-good state.
+
+A configuration backup was created with:
+
+```text
+sysupgrade -b /tmp/astra-travel-openwrt-known-good-2026-09-24.tar.gz
+```
+
+The backup was copied off the router to private workstation storage and verified locally as 7,248 bytes. Because OpenWrt configuration archives can include wireless credentials and other sensitive values, the archive itself is deliberately excluded from the public repository. Only the filename, creation process and validation checkpoint are documented here.
+
 ## Safety decision
 
 LAN DHCP was deliberately disabled while the Pi Ethernet interface was connected to the existing home network. This prevented the OpenWrt DHCP server from competing with the existing home router.
@@ -201,6 +222,9 @@ The travel-router acceptance criteria are now met:
 - [x] Client management and Internet access work through the alternative upstream.
 - [x] Travelmate automatically recovers to another saved uplink when the active upstream disappears.
 - [x] Internet access remains functional after automatic failback.
+- [x] Legacy `radio0` station, default `radio1` AP and obsolete `wwan` interface references have been removed.
+- [x] Cleaned configuration survives reboot with Travelmate and Internet access healthy.
+- [x] Known-good configuration backup created, copied off-router and verified without committing the sensitive archive.
 
 ## Remaining travel-environment validation
 
