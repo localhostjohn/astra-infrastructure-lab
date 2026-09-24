@@ -21,7 +21,7 @@ The core travel router and Travelmate upstream-management workflow are **complet
 
 The private AP, DHCP, wireless management, NAT/routing, USB Wi-Fi WAN and Internet access have all been tested. The configuration has survived both a normal reboot and a full power-off/power-on, and the router has been validated in standalone mode with **no Ethernet cable connected**.
 
-Travelmate is restricted to the USB WAN radio (`radio1`). The previous `wwan_usb` logical interface was migrated to the dedicated Travelmate-managed `trm_wwan` interface and then removed. Cold-boot recovery, switching to a completely different upstream hotspot, and automatic recovery when that hotspot disappeared have all been validated.
+Travelmate is restricted to the USB WAN radio (`radio1`). The previous `wwan_usb` logical interface was migrated to the dedicated Travelmate-managed `trm_wwan` interface and then removed. A later configuration-cleanup pass also removed the obsolete disabled `radio0` station, the unused default `OpenWrt` AP on `radio1`, and the legacy `wwan` logical interface/firewall-zone reference. Cold-boot recovery, switching to a completely different upstream hotspot, and automatic recovery when that hotspot disappeared have all been validated.
 
 The initial AP persistence issue was traced to hostapd Automatic Channel Selection on the built-in radio. OpenWrt created the AP interface, but ACS failed to collect survey data and hostapd disabled the AP. Fixing the built-in radio to channel 1 resolved the issue and has remained persistent across cold boots.
 
@@ -36,6 +36,9 @@ See the [engineering journal entry](../../docs/engineering-journal/entries/2026-
 - Travelmate manages upstream Wi-Fi through `trm_wwan`.
 - Travelmate is restricted to `radio1`, leaving `radio0` dedicated to `Astra-Travel`.
 - The obsolete `wwan_usb` interface has been removed.
+- Legacy wireless/network configuration was cleaned up: the disabled `radio0` upstream station, unused default `OpenWrt` AP on `radio1`, and obsolete `wwan` interface/firewall reference were removed.
+- The cleaned configuration survived a reboot; `Astra-Travel` returned, Travelmate reported `connected (net ok/100)`, and a four-packet Internet test to `1.1.1.1` completed with 0% loss.
+- A known-good OpenWrt configuration backup was created as `astra-travel-openwrt-known-good-2026-09-24.tar.gz` and copied off the router for private storage. The archive itself is intentionally not committed because OpenWrt backups can contain credentials.
 - Travelmate reconnects after a full cold boot.
 - A second phone hotspot was successfully added as an alternative upstream and used for Internet access without disconnecting clients from `Astra-Travel`.
 - When the active hotspot disappeared, Travelmate detected loss of signal and automatically recovered to the saved home uplink in approximately 48 seconds.
@@ -43,6 +46,12 @@ See the [engineering journal entry](../../docs/engineering-journal/entries/2026-
 - The router survives reboot and full power cycles.
 - Normal operation requires only power and the USB Wi-Fi adapter; Ethernet is not required.
 - The travel Wi-Fi credential was rotated after testing and is not stored in the repository.
+
+## Backup and recovery checkpoint
+
+A known-good configuration checkpoint was created after the cleanup and reboot validation using OpenWrt's `sysupgrade -b` backup function. The resulting file is named `astra-travel-openwrt-known-good-2026-09-24.tar.gz`.
+
+The backup was copied from the router's temporary `/tmp` location to private workstation storage and its local size was verified as 7,248 bytes. The raw archive is **not stored in this repository** because an OpenWrt configuration backup may contain Wi-Fi credentials and other sensitive configuration. Repository documentation records only the backup process, filename and validation state.
 
 ## Remaining travel-environment validation
 
