@@ -10,8 +10,11 @@ The Raspberry Pi workstream supports practical Linux administration, container m
 - Installed Docker and validated the engine with a basic test container.
 - Deployed Portainer and Uptime Kuma and accessed their interfaces in the lab.
 - Installed Tailscale on the Pi host and validated private remote SSH access.
-- Configured Tailscale Serve for private access to selected services.
-- Created AdGuard Home directories and developed a custom blocklist; a fully validated network-wide DNS deployment is not claimed.
+- Configured the Pi as a Tailscale subnet router for the home LAN and approved the advertised route in the Tailscale administration interface.
+- Configured Tailscale Split DNS for the private home.arpa namespace, forwarding those queries to AdGuard Home.
+- Validated the private service portal from an iPhone over cellular data with Tailscale enabled.
+- Nginx Proxy Manager provides HTTPS for the private portal using an Astra Root CA and wildcard service certificate.
+- Created AdGuard Home directories and developed a custom blocklist; broader network-wide filtering validation remains a separate workstream.
 - Worked through a Restic backup repository and snapshot exercise. A complete end-to-end restore test is not yet evidenced in this public documentation.
 
 ## Operating principles
