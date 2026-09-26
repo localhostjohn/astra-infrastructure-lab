@@ -15,9 +15,12 @@ For each exercise, record the objective, lab-only prerequisites, expected result
 | SVC-01 | Service account | Scheduled task runs under intended identity | Recorded previously, execution validated | Redacted task result and effective permissions |
 | AZ-01 | Cloud | Lab VM/network can be managed through authorised access | Recorded previously | Sanitised topology and connectivity tests |
 | PI-01 | Linux | Pi and Docker operate correctly | Recorded previously | Version/health output |
+| NET-02 | Private remote access | Authorised endpoint reaches private service through Tailscale subnet routing and Split DNS over cellular | **Passed — 26 September 2026** | Sanitised end-to-end validation record |
 | PI-02 | Remote access | Private SSH connection succeeds | Recorded previously, access validated | Recreated access test |
 | MON-01 | Monitoring | Service status and alert behave as defined | Not yet fully validated | Alert test and recovery result |
 | DNS-01 | DNS | Filtering and allowlist changes behave as expected | Not yet fully validated | Query-log test using fictional domains |
+| DNS-02 | Private DNS | Tailscale Split DNS resolves the private service namespace through AdGuard Home | **Passed — 26 September 2026 for the tested namespace and endpoint** | Sanitised DNS resolution and remote-access record |
+| TLS-01 | Private TLS | Private service certificate chains to the Astra Root CA and is trusted by the test client | **Passed — 26 September 2026** | Sanitised certificate inspection and browser validation |
 | BAK-01 | Backup | Snapshot is created and verified | Recorded previously | Sanitised snapshot metadata |
 | BAK-02 | Recovery | Restored test data matches expected data | Not yet validated | Restore log and checksum comparison |
 | HYB-01 | Hybrid identity | Scoped identities synchronise as designed | Planned | Design and end-to-end test |
