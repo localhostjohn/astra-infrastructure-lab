@@ -17,7 +17,8 @@ The aim is to develop practical infrastructure skills by building services, unde
 | Intune & Conditional Access | Astra baseline policy catalogue documented; implementation and validation still pending | Endpoint management, compliance, strong authentication, staged rollout and evidence |
 | Service accounts | Dedicated account/group and scheduled-task exercise completed and validated | Least privilege and non-interactive logon |
 | Azure | Windows Server VM and supporting cloud networking used for lab administration | Compute, virtual networking, access and cost awareness |
-| Raspberry Pi | Pi 5, Docker, Portainer and Tailscale configured; remote access validated | Linux, containers and private remote administration |
+| Raspberry Pi | Pi 5, Docker, Portainer, Tailscale subnet routing and private remote access configured; service access validated from an iPhone over cellular | Linux, containers, private networking and remote administration |
+| Private DNS & TLS | AdGuard Home provides DNS; Tailscale Split DNS resolves the private home.arpa namespace; Nginx Proxy Manager serves trusted HTTPS using the Astra Root CA | DNS architecture, certificate trust, private service naming and secure remote access |
 | Monitoring | Prometheus/Grafana monitoring added alongside Uptime Kuma; host dashboard work completed, with alerting and controlled-outage validation still in progress | Metrics, dashboards, availability, alerting and incident response |
 | Backup | Scheduled backup, retention dry run and isolated test-file restore recorded; integrity and application recovery outstanding | Backup design, retention and restore verification |
 | Discord automation | Astra server structure successfully bootstrapped with a reusable Python/JSON tool; generic version retained under `tools/` | Automation, configuration-as-code concepts, permissions and repeatability |
@@ -28,6 +29,12 @@ The aim is to develop practical infrastructure skills by building services, unde
 These are summaries of previous lab exercises, not a claim that the entire environment is currently online or that all components have passed production acceptance testing. Screenshots and test results will be added only after they have been reviewed and sanitised.
 
 ## Latest portfolio milestone — September 2026
+
+Astra's remote-access path is now validated end-to-end. The Raspberry Pi advertises the home LAN as a Tailscale subnet route, the route is approved in the Tailscale admin console, and Tailscale Split DNS sends queries for the private home.arpa namespace to AdGuard Home. Nginx Proxy Manager terminates HTTPS for the private service portal using an Astra-issued wildcard certificate chained to the Astra Root CA. An authorised iPhone successfully loaded the private portal over cellular data with Tailscale enabled.
+
+The exact private DNS names, home IP addresses, certificate material and device identifiers are intentionally not published in this repository. The public documentation records the architecture and validation outcome without exposing the live environment.
+
+
 
 Recorded evidence covers a successful scheduled encrypted Restic backup to Azure, a retention dry run with no deletions, and an isolated disposable-file restore verified by matching SHA-256 hashes and byte comparison. These results demonstrate backup execution and recovery of the selected test file, not complete application recovery. See the [9 September backup and recovery evidence](evidence/2026-09-09-raspberry-pi-backup-recovery.md).
 
@@ -78,7 +85,7 @@ flowchart TB
     D -. Planned segmentation .-> M[VLANs and routed subnets]
 ```
 
-See [Architecture](docs/architecture.md) for trust boundaries, dependencies and the lab-only addressing example.
+See [Architecture](docs/architecture.md) and [Remote Access](docs/remote-access.md) for trust boundaries, private DNS, Tailscale routing and certificate considerations.
 
 ## Repository structure
 
@@ -92,6 +99,7 @@ astra-infrastructure-lab/
 │   ├── active-directory.md
 │   ├── operations.md
 │   ├── raspberry-pi-operations.md
+│   ├── remote-access.md
 │   ├── validation.md
 │   ├── roadmap.md
 │   ├── intune/
@@ -136,7 +144,7 @@ This repository intentionally does not contain live deployment secrets, actual A
 
 The emphasis is on infrastructure engineering rather than simply installing products. Each workstream should demonstrate requirements, design choices, implementation, security considerations, evidence of testing, failure handling and lessons learned.
 
-The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. The [Astra Intune Baseline](docs/intune/README.md) documents the proposed Conditional Access, compliance, endpoint-security, update, application and BYOD controls together with a staged validation model. [Operations](docs/operations.md) covers monitoring, backup and recovery. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning. The [Engineering Journal](docs/engineering-journal/README.md) preserves the reasoning, decisions, experiments and reflections behind significant changes. The [Discord Server Bootstrapper](tools/discord-server-bootstrapper/README.md) provides a reusable automation example for configuration-driven service setup.
+The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. The [Astra Intune Baseline](docs/intune/README.md) documents the proposed Conditional Access, compliance, endpoint-security, update, application and BYOD controls together with a staged validation model. [Operations](docs/operations.md) covers monitoring, backup, recovery and service operations. [Remote Access](docs/remote-access.md) records the validated private-access, Split DNS and TLS architecture. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning. The [Engineering Journal](docs/engineering-journal/README.md) preserves the reasoning, decisions, experiments and reflections behind significant changes. The [Discord Server Bootstrapper](tools/discord-server-bootstrapper/README.md) provides a reusable automation example for configuration-driven service setup.
 
 ## First practical automation example
 
