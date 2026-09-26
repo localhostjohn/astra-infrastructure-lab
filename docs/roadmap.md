@@ -40,7 +40,7 @@ Create a small isolated Azure deployment with Terraform or Bicep. Use version co
 
 ## 7. Operations and recovery
 
-Define monitoring checks and alerts, document container updates, and perform a full backup/restore test with disposable data. Record failure scenarios and recovery time. Consider a separate backup destination and restore automation only after the basic workflow is proven.
+Define monitoring checks and alerts, document container updates, extend the validated remote-access model into a broader service-access test matrix, and perform a full backup/restore test with disposable data. Record failure scenarios and recovery time. Consider a separate backup destination and restore automation only after the basic workflow is proven.
 
 **Evidence:** Sanitised monitoring test, restore log, checksums and runbook.
 
