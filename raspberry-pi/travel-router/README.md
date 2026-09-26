@@ -13,11 +13,11 @@ This workstream documents a portable OpenWrt travel router based on a Raspberry 
 - **Upstream manager:** Travelmate 2.2.1-r6
 - **Travelmate interface:** `trm_wwan`, DHCP, metric 100, WAN firewall zone
 - **Operating system:** OpenWrt 24.10.7
-- **Remote home-lab access:** Tailscale is planned as a separate secure overlay
+- **Remote home-lab access:** endpoint-based Tailscale; router-level Tailscale was evaluated and deliberately removed
 
 ## Status
 
-The core travel router and Travelmate upstream-management workflow are **complete and validated**.
+The core travel router and Travelmate upstream-management workflow are **complete and validated**. A short router-level Tailscale evaluation was also completed on 25 September 2026; after confirming the package/service operated on OpenWrt, it was removed so the travel router remains focused on routing and upstream connectivity while Tailscale stays on individual client devices.
 
 The private AP, DHCP, wireless management, NAT/routing, USB Wi-Fi WAN and Internet access have all been tested. The configuration has survived both a normal reboot and a full power-off/power-on, and the router has been validated in standalone mode with **no Ethernet cable connected**.
 
@@ -46,6 +46,7 @@ See the [engineering journal entry](../../docs/engineering-journal/entries/2026-
 - The router survives reboot and full power cycles.
 - Normal operation requires only power and the USB Wi-Fi adapter; Ethernet is not required.
 - The travel Wi-Fi credential was rotated after testing and is not stored in the repository.
+- Tailscale was temporarily installed on OpenWrt, verified as running, then removed by design. Endpoint devices remain responsible for joining the Astra tailnet.
 
 ## Backup and recovery checkpoint
 
@@ -59,7 +60,7 @@ The core router and upstream switching behaviour are complete. Remaining work is
 
 - Validate an authorised captive portal in a real guest/travel environment.
 - Document any captive-portal MAC-binding behaviour encountered.
-- Install and validate Tailscale on the travel MacBook for access back to the Astra home lab.
+- Install and validate Tailscale on the travel MacBook for access back to the Astra home lab. Router-level Tailscale is not part of the current design.
 
 ## Security notes
 
