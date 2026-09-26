@@ -23,19 +23,23 @@ The aim is to develop practical infrastructure skills by building services, unde
 | Discord automation | Astra server structure successfully bootstrapped with a reusable Python/JSON tool; generic version retained under `tools/` | Automation, configuration-as-code concepts, permissions and repeatability |
 | Entra synchronisation | Planned; no completed end-to-end hybrid identity validation claimed | Identity lifecycle and hybrid architecture |
 | VLAN segmentation | Planned; not claimed as implemented on the home network | Routing, switching and trust boundaries |
-| Infrastructure as code | Learning roadmap | Terraform, Bicep and repeatable deployment |
+| Infrastructure as code | Bicep selected; Azure network foundation is active in open PR #5 and awaits deployment/validation before merge | Bicep, declarative infrastructure, repeatable deployment and validation |
 
 These are summaries of previous lab exercises, not a claim that the entire environment is currently online or that all components have passed production acceptance testing. Screenshots and test results will be added only after they have been reviewed and sanitised.
 
 ## Latest portfolio milestone — September 2026
 
-Recorded evidence covers a successful scheduled encrypted Restic backup to Azure, a retention dry run with no deletions, and an isolated disposable-file restore verified by matching SHA-256 hashes and byte comparison. These results demonstrate backup execution and recovery of the selected test file, not complete application recovery. See the [9 September backup and recovery evidence](evidence/2026-09-09-raspberry-pi-backup-recovery.md).
+The latest completed workstream is the **Astra Travel Router**: a Raspberry Pi 3/OpenWrt router with a dedicated private Wi-Fi AP, USB Wi-Fi upstream, Travelmate-managed failover, reboot/cold-boot validation and a documented private recovery checkpoint. A router-level Tailscale installation was subsequently tested and deliberately removed; the current design keeps Tailscale on endpoint devices rather than the travel router. See the [travel-router documentation](raspberry-pi/travel-router/README.md) and [operational runbook](raspberry-pi/travel-router/RUNBOOK.md).
+
+The Azure Infrastructure-as-Code path is also active. Bicep has been selected and the first small network foundation is tracked in [PR #5](https://github.com/localhostjohn/astra-infrastructure-lab/pull/5). That work remains separate from `main` until deployment and repeatability validation are completed.
+
+Earlier recorded evidence covers a successful scheduled encrypted Restic backup to Azure, a retention dry run with no deletions, and an isolated disposable-file restore verified by matching SHA-256 hashes and byte comparison. These results demonstrate backup execution and recovery of the selected test file, not complete application recovery. See the [9 September backup and recovery evidence](evidence/2026-09-09-raspberry-pi-backup-recovery.md).
 
 The read-only AD inventory script also has [six passing local mocked Pester tests recorded on 8 September](evidence/2026-09-08-ad-inventory-unit-tests.md). Live AD execution and CI success remain separate, unverified claims.
 
 A reusable [Discord Server Bootstrapper](tools/discord-server-bootstrapper/README.md) has now been added after successfully completing the Astra server-structure build. It uses a JSON layout, local `.env` secrets, preview/apply modes, explicit confirmation and non-destructive reruns. See the [Discord bootstrapper evidence note](evidence/2026-09-09-discord-server-bootstrapper.md).
 
-**Next milestone:** complete alert routing and perform a bounded outage of one disposable container, documenting healthy → down → recovered monitoring states, detection delay, rollback and lessons learned. No essential service or remote-access dependency should be stopped. Repository integrity and application-level restore validation remain outstanding.
+**Current sequence:** continue the Bicep network-foundation milestone and validate it before merge; then return to the existing Azure Windows Server environment; after that, continue the Authentik/Homepage service-access work. Monitoring alert/outage validation, repository integrity and application-level restore validation remain outstanding parallel workstreams.
 
 See the [detailed evidence checklist and controlled outage plan](evidence/portfolio-evidence-checklist.md) for completed evidence, remaining checks, safety gates and acceptance criteria.
 
@@ -107,6 +111,11 @@ astra-infrastructure-lab/
 │       ├── experiments/
 │       ├── research-notes/
 │       └── reflections/
+├── raspberry-pi/
+│   ├── printing/
+│   └── travel-router/
+│       ├── README.md
+│       └── RUNBOOK.md
 ├── scripts/
 │   ├── README.md
 │   └── Get-AstraADHealth.ps1
