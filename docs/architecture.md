@@ -24,7 +24,9 @@ The cloud VM is part of a personal Azure lab. An eventual connection to Microsof
 
 ## Linux and container services
 
-The Raspberry Pi workstream includes Docker, Portainer, Tailscale and Uptime Kuma. Tailscale is installed on the host, providing a private remote-access path. Container management interfaces should remain accessible only through appropriately restricted management networks or private access controls. Publishing a port is not the same as authorising access; both host/network filtering and application authentication must be considered.
+The Raspberry Pi workstream includes Docker, Portainer, Tailscale and Uptime Kuma. Tailscale is installed on the Pi host, providing a private remote-access path. A MacBook Neo has also been configured as a Tailscale endpoint on the Astra tailnet, so the previous MacBook Tailscale installation task is complete. This records endpoint configuration only; individual service-access paths should still be validated and documented separately before being claimed as tested.
+
+Container management interfaces should remain accessible only through appropriately restricted management networks or private access controls. Publishing a port is not the same as authorising access; both host/network filtering and application authentication must be considered.
 
 DNS filtering and backup services are separate workstreams. The existence of a blocklist or backup snapshot does not establish that DNS filtering is active for every device or that full disaster recovery has been tested.
 
@@ -33,6 +35,7 @@ DNS filtering and backup services are separate workstreams. The existence of a b
 ```mermaid
 flowchart LR
     U[Administrator] -->|Authenticated private access| M[Management boundary]
+    N[MacBook Neo / Tailscale endpoint] -->|Private tailnet access| M
     M --> W[Windows lab]
     M --> P[Pi management]
     W --> I[Lab directory identities]
