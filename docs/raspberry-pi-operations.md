@@ -65,7 +65,7 @@ If a unit has a different name or is not installed, record that rather than crea
 | --- | --- | --- | --- |
 | PI-01 | Host and OS baseline | Sanitised hardware/OS summary | Pending current verification |
 | PI-02 | Docker and application inventory | Reviewed service list and image versions | Pending current verification |
-| PI-03 | Private management access | Tailscale endpoints configured; controlled service-access test | **In progress — Pi and MacBook Neo endpoints configured** |
+| PI-03 | Private management access | Tailscale subnet route, Split DNS and controlled service-access test | **Passed — 26 September 2026 for the tested iPhone → Pi/service path** |
 | PI-04 | Monitoring | Defined checks and a controlled alert test | Pending current verification |
 | PI-05 | Backup scheduling | Reviewed unit definitions and actual execution history | **Passed — 9 September 2026** |
 | PI-06 | Retention | Dry-run and approved retention outcome | **Passed — 9 September 2026; no deletions** |
@@ -87,6 +87,14 @@ Before changing retention, confirm the repository, snapshot scope and policy. Re
 ## Security and publication boundaries
 
 Keep Tailscale authentication material, private DNS names, home addresses, actual IP ranges, SSH keys, tokens, `.env` files and backup credentials out of Git. Use documentation-only addresses and recreated diagrams. Do not expose Portainer, Uptime Kuma or other management interfaces publicly merely to demonstrate the project. Record only the minimum evidence needed to show the engineering decision and result.
+
+## Remote-access checkpoint — 26 September 2026
+
+The Astra remote-access path is now validated for the tested service portal. The Pi advertises the home LAN through Tailscale subnet routing, the route is approved, and Tailscale Split DNS directs the private home.arpa namespace to AdGuard Home. Nginx Proxy Manager terminates HTTPS using the Astra Root CA and wildcard service certificate. An authorised iPhone successfully loaded the portal over cellular data while Tailscale was enabled.
+
+The exact private DNS names, addresses, certificate material and device identifiers are intentionally excluded from this public repository. Tailscale remains the remote-access boundary; no public port forwarding is required for this path. The travel router is not part of the Tailscale design.
+
+**PI-03 status: Passed for the tested endpoint and service path.**
 
 ## Next practical exercise
 
