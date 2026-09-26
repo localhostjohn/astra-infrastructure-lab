@@ -4,7 +4,7 @@
 
 This workstream documents practical Linux and infrastructure operations on the personal Astra Raspberry Pi 5. It is a learning record, not a complete deployment package or a claim that every service is currently healthy. The existing [operations overview](operations.md) covers the broader principles; this page provides a more focused Pi runbook and evidence plan.
 
-The lab has included Docker, Portainer, Uptime Kuma, host-installed Tailscale, private remote access and Restic backup work. AdGuard Home has been prepared and a custom blocklist developed, but a fully validated network-wide DNS deployment is not claimed. Backup scheduling, retention and a disposable-file restore have now been validated through actual terminal output. The repository integrity check and complete application recovery remain outstanding.
+The lab has included Docker, Portainer, Uptime Kuma, host-installed Tailscale, private remote access and Restic backup work. The MacBook Neo is now also installed and configured as a Tailscale endpoint on the Astra tailnet; its previous installation task is complete. AdGuard Home has been prepared and a custom blocklist developed, but a fully validated network-wide DNS deployment is not claimed. Backup scheduling, retention and a disposable-file restore have now been validated through actual terminal output. The repository integrity check and complete application recovery remain outstanding.
 
 ## Illustrative service architecture
 
@@ -12,7 +12,8 @@ This diagram is a conceptual representation using fictional labels. It is not an
 
 ```mermaid
 flowchart TB
-    A[Administrator device] --> B[Private Tailscale access]
+    M[MacBook Neo / Tailscale endpoint] --> B[Private Tailscale access]
+    A[Other authorised administrator device] --> B
     B --> P[Raspberry Pi 5 / Linux]
     P --> D[Docker Engine]
     D --> C[Portainer]
@@ -23,7 +24,7 @@ flowchart TB
     R --> T[Isolated disposable-file restore]
 ```
 
-The arrows do not imply that all components are currently running or that every path has been tested. The restore path has been validated for a small disposable dataset, not for a complete application recovery.
+The arrows do not imply that all components are currently running or that every path has been tested. MacBook Neo Tailscale endpoint configuration is complete, but service-specific access from that endpoint should be recorded separately when validated. The restore path has been validated for a small disposable dataset, not for a complete application recovery.
 
 ## Read-only baseline collection
 
@@ -64,7 +65,7 @@ If a unit has a different name or is not installed, record that rather than crea
 | --- | --- | --- | --- |
 | PI-01 | Host and OS baseline | Sanitised hardware/OS summary | Pending current verification |
 | PI-02 | Docker and application inventory | Reviewed service list and image versions | Pending current verification |
-| PI-03 | Private management access | Access-path diagram and controlled connectivity test | Pending current verification |
+| PI-03 | Private management access | Tailscale endpoints configured; controlled service-access test | **In progress — Pi and MacBook Neo endpoints configured** |
 | PI-04 | Monitoring | Defined checks and a controlled alert test | Pending current verification |
 | PI-05 | Backup scheduling | Reviewed unit definitions and actual execution history | **Passed — 9 September 2026** |
 | PI-06 | Retention | Dry-run and approved retention outcome | **Passed — 9 September 2026; no deletions** |
@@ -89,7 +90,7 @@ Keep Tailscale authentication material, private DNS names, home addresses, actua
 
 ## Next practical exercise
 
-Complete the current host and container baseline, verify the repository integrity check after its scheduled execution, and plan an isolated application-level recovery exercise. Do not mark broader recoverability as passed until the actual results have been recorded.
+Complete the current host and container baseline, verify the repository integrity check after its scheduled execution, and plan an isolated application-level recovery exercise. For private management access, validate a controlled MacBook Neo → Tailscale → Pi/service path and record only sanitised evidence. Do not mark broader recoverability as passed until the actual results have been recorded.
 
 ## References
 
