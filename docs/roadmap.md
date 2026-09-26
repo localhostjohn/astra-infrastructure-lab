@@ -34,9 +34,11 @@ Build the Astra Intune baseline in a controlled lab scope. Start with policy inv
 
 ## 6. Infrastructure as code
 
-Create a small isolated Azure deployment with Terraform or Bicep. Use version control, parameterised configuration, validation and a documented teardown. Avoid live credentials and expensive resources; review cost and permissions before deployment.
+**Current status:** Bicep has been selected as the present Azure IaC path. The first small network foundation is implemented on the open `feature/bicep-network-foundation` branch in [PR #5](https://github.com/localhostjohn/astra-infrastructure-lab/pull/5), covering a VNet, workload subnet, NSG, parameters and outputs. It is not yet treated as completed evidence because deployment/repeatability validation is still pending.
 
-**Evidence:** Reviewed templates, deployment output, validation and cleanup record.
+Continue with the small isolated Azure deployment using version control, parameterised configuration, `what-if`, deployment validation and a documented teardown. Avoid live credentials and expensive resources; review cost and permissions before deployment. Only add compute after the networking stage is understood and validated.
+
+**Evidence:** Reviewed Bicep templates, `what-if` output, first deployment, second/repeat deployment behaviour, validation and cleanup record.
 
 ## 7. Operations and recovery
 

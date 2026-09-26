@@ -40,6 +40,7 @@ Internet
 - Captive portal detection is enabled
 - MAC randomisation is disabled
 - Ethernet is not required for normal operation
+- Tailscale is intentionally kept off the router; authorised endpoint devices join the tailnet individually
 
 ## Before travelling
 
@@ -240,9 +241,11 @@ Treat the archive as sensitive. Do not upload it to the public repository, paste
 
 A restore should be used as a recovery action only when necessary. Before restoring, confirm the backup belongs to the expected OpenWrt travel-router build and preserve any newer configuration that may be required.
 
-## Tailscale client validation
+## Tailscale design and client validation
 
-Tailscale on the travel MacBook is a separate overlay and does not replace the OpenWrt/Travelmate WAN workflow.
+On 25 September 2026, Tailscale was temporarily installed on the OpenWrt router and confirmed running. It was then deliberately removed. The operational design is to keep the router responsible for Wi-Fi routing/upstream management and keep Tailscale on individual authorised client devices.
+
+Tailscale on the travel MacBook is therefore a separate endpoint overlay and does not replace the OpenWrt/Travelmate WAN workflow.
 
 Planned validation:
 
@@ -269,6 +272,7 @@ Do not expose Astra management services directly to hotel/public Wi-Fi to replac
 - [x] Automatic upstream recovery/failback validated.
 - [x] Legacy wireless/network configuration removed.
 - [x] Known-good private backup created and copied off-router.
+- [x] Router-level Tailscale evaluated and deliberately removed.
 - [ ] Real captive-portal guest network validated.
 - [ ] Tailscale on travel MacBook validated through `Astra-Travel`.
 
