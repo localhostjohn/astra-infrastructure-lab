@@ -24,7 +24,9 @@ The cloud VM is part of a personal Azure lab. An eventual connection to Microsof
 
 ## Linux and container services
 
-The Raspberry Pi workstream includes Docker, Portainer, Tailscale and Uptime Kuma. Tailscale is installed on the Pi host, providing a private remote-access path and an approved subnet route to the home LAN. A MacBook Neo and iPhone have also been configured as Tailscale endpoints on the Astra tailnet. The iPhone has been used to validate remote access to the private service portal over cellular data. Private DNS uses Tailscale Split DNS with AdGuard Home, while Nginx Proxy Manager provides trusted HTTPS using the Astra Root CA. Service-specific access remains independently scoped and should not be inferred for services that have not been tested.
+The Raspberry Pi workstream includes Docker, Portainer, Tailscale, Uptime Kuma and a self-hosted RustDesk OSS server. Tailscale is installed on the Pi host, providing a private remote-access path and an approved subnet route to the home LAN. A MacBook Neo and iPhone have also been configured as Tailscale endpoints on the Astra tailnet. The iPhone has been used to validate remote access to the private service portal over cellular data. Private DNS uses Tailscale Split DNS with AdGuard Home, while Nginx Proxy Manager provides trusted HTTPS using the Astra Root CA.
+
+RustDesk adds a separate remote endpoint-control layer. The Windows workstation has successfully registered with the Astra RustDesk server and reached the Ready state over Tailscale. A complete MacBook-to-Windows remote-control session from an external network has not yet been claimed. Service-specific access remains independently scoped and should not be inferred for services that have not been tested.
 
 Container management interfaces should remain accessible only through appropriately restricted management networks or private access controls. Publishing a port is not the same as authorising access; both host/network filtering and application authentication must be considered.
 
@@ -41,6 +43,8 @@ flowchart LR
     W --> I[Lab directory identities]
     P --> C[Container workloads]
     C --> D[DNS and monitoring services]
+    P --> RDE[RustDesk hbbs / hbbr]
+    RDE -. Remote endpoint control; Windows registration validated .-> W
     P --> R[Backup storage]
     W -. Future hybrid identity design .-> E[Entra ID]
     M -. Future routed segmentation .-> V[Lab VLANs]
