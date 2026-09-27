@@ -4,7 +4,7 @@
 
 This workstream documents practical Linux and infrastructure operations on the personal Astra Raspberry Pi 5. It is a learning record, not a complete deployment package or a claim that every service is currently healthy. The existing [operations overview](operations.md) covers the broader principles; this page provides a more focused Pi runbook and evidence plan.
 
-The lab has included Docker, Portainer, Uptime Kuma, host-installed Tailscale, private remote access and Restic backup work. The MacBook Neo is now also installed and configured as a Tailscale endpoint on the Astra tailnet; its previous installation task is complete. AdGuard Home has been prepared and a custom blocklist developed, but a fully validated network-wide DNS deployment is not claimed. Backup scheduling, retention and a disposable-file restore have now been validated through actual terminal output. The repository integrity check and complete application recovery remain outstanding.
+The lab has included Docker, Portainer, Uptime Kuma, host-installed Tailscale, private remote access, a self-hosted RustDesk OSS server and Restic backup work. The MacBook Neo is now also installed and configured as a Tailscale endpoint on the Astra tailnet; its previous installation task is complete. AdGuard Home has been prepared and a custom blocklist developed, but a fully validated network-wide DNS deployment is not claimed. Backup scheduling, retention and a disposable-file restore have now been validated through actual terminal output. The repository integrity check and complete application recovery remain outstanding.
 
 ## Illustrative service architecture
 
@@ -18,6 +18,8 @@ flowchart TB
     P --> D[Docker Engine]
     D --> C[Portainer]
     D --> U[Uptime Kuma]
+    D --> RD[RustDesk hbbs / hbbr]
+    RD -. Windows client registration validated .-> W[Windows workstation]
     D -. DNS workstream .-> G[AdGuard Home]
     P --> R[Restic backup repository]
     P --> S[systemd backup / retention / check units]
@@ -71,6 +73,7 @@ If a unit has a different name or is not installed, record that rather than crea
 | PI-06 | Retention | Dry-run and approved retention outcome | **Passed — 9 September 2026; no deletions** |
 | PI-07 | Repository integrity | Actual repository-check result | Pending first verified run |
 | PI-08 | Recovery | Isolated restore and checksum comparison | **Passed — 9 September 2026; disposable file** |
+| PI-09 | Remote endpoint control | Self-hosted RustDesk server plus endpoint registration | **Partial pass — 27 September 2026; Windows client Ready, cross-device remote-control test pending** |
 
 The backup, retention and restore results are documented in [Backup and Recovery Validation](../evidence/2026-09-09-raspberry-pi-backup-recovery.md). Historical setup and test notes remain useful context, but they do not replace current validation. Record the date, software version, check performed, expected outcome, actual result and any corrective action for each exercise.
 
@@ -96,9 +99,15 @@ The exact private DNS names, addresses, certificate material and device identifi
 
 **PI-03 status: Passed for the tested endpoint and service path.**
 
+## RustDesk checkpoint — 27 September 2026
+
+RustDesk OSS has been deployed on the Pi with separate rendezvous/signalling and relay services. The first Windows endpoint has been configured against the Astra server, the Windows RustDesk service is running, and the client reached the Ready state through Tailscale. A packet capture on the Pi confirmed rendezvous traffic on the private tailnet.
+
+No live Tailscale addresses, RustDesk keys, endpoint IDs or unattended-access credentials are published. The next RustDesk validation step is deliberately paused: configure the MacBook Neo client, validate unattended access and complete a remote-control test from an external network before marking end-to-end endpoint control as passed.
+
 ## Next practical exercise
 
-Complete the current host and container baseline, verify the repository integrity check after its scheduled execution, and plan an isolated application-level recovery exercise. For private management access, validate a controlled MacBook Neo → Tailscale → Pi/service path and record only sanitised evidence. Do not mark broader recoverability as passed until the actual results have been recorded.
+Complete the current host and container baseline, verify the repository integrity check after its scheduled execution, and plan an isolated application-level recovery exercise. For remote endpoint control, resume with the MacBook Neo RustDesk client and an external-network Windows control test. Do not mark broader recoverability or RustDesk end-to-end control as passed until the actual results have been recorded.
 
 ## References
 
