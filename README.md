@@ -17,7 +17,7 @@ The aim is to develop practical infrastructure skills by building services, unde
 | Intune & Conditional Access | Astra baseline policy catalogue documented; implementation and validation still pending | Endpoint management, compliance, strong authentication, staged rollout and evidence |
 | Service accounts | Dedicated account/group and scheduled-task exercise completed and validated | Least privilege and non-interactive logon |
 | Azure | Windows Server VM and supporting cloud networking used for lab administration | Compute, virtual networking, access and cost awareness |
-| Raspberry Pi | Pi 5, Docker, Portainer, Tailscale subnet routing and private remote access configured; service access validated from an iPhone over cellular | Linux, containers, private networking and remote administration |
+| Raspberry Pi | Pi 5, Docker, Portainer, Tailscale subnet routing and private remote access configured; service access validated from an iPhone over cellular; self-hosted RustDesk server deployed and Windows client registration validated | Linux, containers, private networking, remote administration and endpoint control |
 | Private DNS & TLS | AdGuard Home provides DNS; Tailscale Split DNS resolves the private home.arpa namespace; Nginx Proxy Manager serves trusted HTTPS using the Astra Root CA | DNS architecture, certificate trust, private service naming and secure remote access |
 | Monitoring | Prometheus/Grafana monitoring added alongside Uptime Kuma; host dashboard work completed, with alerting and controlled-outage validation still in progress | Metrics, dashboards, availability, alerting and incident response |
 | Backup | Scheduled backup, retention dry run and isolated test-file restore recorded; integrity and application recovery outstanding | Backup design, retention and restore verification |
@@ -33,6 +33,8 @@ These are summaries of previous lab exercises, not a claim that the entire envir
 Astra's remote-access path is now validated end-to-end. The Raspberry Pi advertises the home LAN as a Tailscale subnet route, the route is approved in the Tailscale admin console, and Tailscale Split DNS sends queries for the private home.arpa namespace to AdGuard Home. Nginx Proxy Manager terminates HTTPS for the private service portal using an Astra-issued wildcard certificate chained to the Astra Root CA. An authorised iPhone successfully loaded the private portal over cellular data with Tailscale enabled.
 
 The exact private DNS names, home IP addresses, certificate material and device identifiers are intentionally not published in this repository. The public documentation records the architecture and validation outcome without exposing the live environment.
+
+A self-hosted RustDesk OSS service has also been added to the Pi as the remote endpoint-control layer. On 27 September 2026 the Windows client successfully registered through Tailscale and reached the Ready state. This checkpoint proves server/client registration only; MacBook Neo configuration, unattended-access validation and an off-site remote-control session are intentionally left as the next RustDesk test rather than being claimed as complete.
 
 
 
@@ -76,6 +78,8 @@ flowchart TB
     D --> G[Raspberry Pi 5]
     G --> H[Docker / Portainer]
     H --> I[Uptime Kuma]
+    G --> RD[RustDesk hbbs / hbbr]
+    RD -. Windows registration validated .-> A
     G --> N[Prometheus / Grafana]
     N --> O[Metrics dashboards]
     N -. alerting validation in progress .-> P[Discord operations channels]
