@@ -10,6 +10,7 @@ The Raspberry Pi workstream supports practical Linux administration, container m
 - Installed Docker and validated the engine with a basic test container.
 - Deployed Portainer and Uptime Kuma and accessed their interfaces in the lab.
 - Installed Tailscale on the Pi host and validated private remote SSH access.
+- Deployed a self-hosted RustDesk OSS server on the Pi and validated Windows client registration over Tailscale; cross-device remote-control testing remains pending.
 - Configured the Pi as a Tailscale subnet router for the home LAN and approved the advertised route in the Tailscale administration interface.
 - Configured Tailscale Split DNS for the private home.arpa namespace, forwarding those queries to AdGuard Home.
 - Validated the private service portal from an iPhone over cellular data with Tailscale enabled.
@@ -26,6 +27,10 @@ Keep management interfaces on a private management network or authenticated priv
 ### Container maintenance
 
 Record the image name and pinned version/digest, persistent volume paths, dependencies, exposed ports and health checks. Before an upgrade, review release notes and take a suitable application-consistent backup. Test the upgraded service before removing the previous image or backup. Do not use `latest` as a substitute for a controlled update policy.
+
+### Remote endpoint control
+
+RustDesk is used as a private remote endpoint-control layer rather than as a public-facing service. The Astra design keeps Tailscale as the remote network boundary and uses the Pi-hosted RustDesk rendezvous and relay services for endpoint coordination. Do not publish server keys, endpoint IDs, passwords or live private addresses. Treat a client showing Ready as registration evidence only; unattended access and an actual remote session should be tested separately before claiming end-to-end control.
 
 ### Monitoring
 
