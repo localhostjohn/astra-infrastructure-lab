@@ -53,6 +53,31 @@ The following state was verified on 26 September 2026:
 
 This does not establish that every home service is reachable remotely. Service-specific access should be tested independently.
 
+## Remote endpoint control with RustDesk
+
+A self-hosted RustDesk OSS server has now been deployed on the Astra Pi using Docker. The deployment uses the RustDesk rendezvous/signalling service (`hbbs`) and relay service (`hbbr`) while Tailscale remains the private network boundary.
+
+The Windows workstation has been configured as the first RustDesk endpoint and successfully reached the **Ready** state against the self-hosted server over Tailscale. Packet capture on the Pi confirmed client traffic reaching the RustDesk rendezvous service through the tailnet.
+
+The public repository intentionally does not publish the live Tailscale addresses, RustDesk server public key, endpoint ID, unattended-access password or other connection details.
+
+### Current validation state
+
+Verified on 27 September 2026:
+
+- RustDesk `hbbs` and `hbbr` are running on the Astra Pi.
+- The Windows client can reach the required RustDesk service path through Tailscale.
+- The Windows RustDesk service is installed and running.
+- The Windows client is configured to use the Astra self-hosted RustDesk server.
+- The Windows client reports **Ready**.
+- Traffic to the rendezvous service was observed over the Tailscale interface.
+
+**Status: Passed for Windows client registration to the Astra RustDesk server.**
+
+This does **not** yet claim a completed remote-control session from an off-site device. MacBook Neo client configuration, unattended-access validation and an external-network remote-control test remain future work.
+
+RustDesk is therefore treated as the **remote endpoint-control layer**, while Tailscale remains the **remote network-access layer**.
+
 ## Private DNS
 
 AdGuard Home is the DNS service for the Astra home network.
@@ -114,6 +139,7 @@ Nginx Proxy Manager also passed its configuration syntax test and could reach th
 | Nginx Proxy Manager for HTTPS | Provides one service entry point and TLS termination |
 | Private Astra Root CA | Allows trusted HTTPS for internal-only services |
 | Tailscale remains on endpoints | Avoids coupling the travel router to the remote-access control plane |
+| RustDesk remains private behind Tailscale | Adds remote graphical endpoint control without exposing RustDesk directly to the public internet |
 | No public DNS records for private services | Prevents accidental publication of internal service names |
 
 ## Limitations
@@ -124,6 +150,8 @@ It does not prove:
 
 - every Docker service is reachable remotely;
 - every endpoint has Tailscale configured;
+- a complete RustDesk remote-control session from an external network has been validated;
+- unattended RustDesk access has been validated from the MacBook Neo;
 - application-level authentication is correctly configured for every service;
 - DNS remains available during every possible home-network failure;
 - the certificate authority has a complete automated renewal/revocation process;
@@ -137,7 +165,7 @@ If AdGuard Home is unavailable, private DNS names may stop resolving through the
 
 If the Astra Root CA is unavailable or removed from a client, the service may still be reachable but the client may no longer trust the HTTPS certificate.
 
-If the Pi is offline, its Tailscale subnet route and services hosted on the Pi are unavailable through this path.
+If the Pi is offline, its Tailscale subnet route and services hosted on the Pi are unavailable through this path. The self-hosted RustDesk rendezvous and relay services are also unavailable, so remote endpoint control that depends on the Astra RustDesk server will fail until the Pi service path is restored.
 
 These dependencies should be considered before future changes to DNS, certificates, Docker networking or Tailscale.
 
@@ -153,4 +181,4 @@ Public documentation records the architecture and outcome only. Do not publish:
 - personal account identifiers;
 - raw terminal output containing sensitive infrastructure details.
 
-**Milestone:** Remote access + private DNS + trusted TLS — **validated 26 September 2026**.
+**Milestones:** Remote access + private DNS + trusted TLS — **validated 26 September 2026**. RustDesk Windows client registration to the self-hosted Astra server — **validated 27 September 2026**; cross-device remote-control validation remains pending.
