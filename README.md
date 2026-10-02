@@ -154,6 +154,10 @@ The [Active Directory](docs/active-directory.md) notes record identity and polic
 
 The [read-only AD inventory script](scripts/README.md) provides a concrete, reviewable starting point for PowerShell automation. It collects domain, forest and domain-controller metadata, supports optional replication-failure queries, and includes mocked Pester tests. It does not change directory objects or write files unless a local report path is explicitly supplied. Six local mocked tests are [recorded as passed](evidence/2026-09-08-ad-inventory-unit-tests.md); live-lab execution and CI success are not yet verified.
 
+## Network troubleshooting automation
+
+[Astra Network Triage](tools/network-triage/README.md) collects read-only Windows network configuration, name-resolution, ICMP, TCP and optional HTTP/HTTPS evidence for a selected service. It includes structured reports, next-check guidance, mocked and loopback tests, and [planned controlled fault scenarios](tools/network-triage/LAB-SCENARIOS.md). Runtime and lab validation are tracked separately; illustrative output is not live evidence.
+
 ## Getting started
 
 This is not a one-command deployment. Begin with the reference architecture and select a single workstream. Use isolated lab infrastructure, take a suitable snapshot or backup, and follow the relevant official product documentation. Replace every example hostname, domain and IP address with values appropriate to your own authorised lab.
