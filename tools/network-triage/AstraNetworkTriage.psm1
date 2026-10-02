@@ -54,7 +54,7 @@ function Test-AstraTcp {
     try {
         $task = $client.ConnectAsync($Address, $Port)
         if (-not $task.Wait($TimeoutSeconds * 1000)) { throw 'TCP connection timed out.' }
-        $task.GetAwaiter().GetResult()
+        $null = $task.GetAwaiter().GetResult()
         [pscustomobject]@{ Address=$Address.ToString(); Port=$Port; Connected=$true; DurationMs=$watch.ElapsedMilliseconds; Error=$null }
     } catch {
         [pscustomobject]@{ Address=$Address.ToString(); Port=$Port; Connected=$false; DurationMs=$watch.ElapsedMilliseconds; Error=$_.Exception.GetBaseException().Message }
