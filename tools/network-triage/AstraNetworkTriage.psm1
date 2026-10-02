@@ -12,11 +12,11 @@ function Get-AstraLocalNetwork {
         [pscustomobject]@{
             InterfaceIndex=$_.InterfaceIndex
             InterfaceAlias=$_.InterfaceAlias
-            IPv4=@($_.IPv4Address | ForEach-Object { $_.IPAddress })
-            IPv6=@($_.IPv6Address | ForEach-Object { $_.IPAddress })
-            IPv4Gateway=@($_.IPv4DefaultGateway | ForEach-Object { $_.NextHop })
-            IPv6Gateway=@($_.IPv6DefaultGateway | ForEach-Object { $_.NextHop })
-            DnsServers=@($_.DNSServer | ForEach-Object { $_.ServerAddresses })
+            IPv4=@($_.IPv4Address | Where-Object { $null -ne $_ } | ForEach-Object { $_.IPAddress })
+            IPv6=@($_.IPv6Address | Where-Object { $null -ne $_ } | ForEach-Object { $_.IPAddress })
+            IPv4Gateway=@($_.IPv4DefaultGateway | Where-Object { $null -ne $_ } | ForEach-Object { $_.NextHop })
+            IPv6Gateway=@($_.IPv6DefaultGateway | Where-Object { $null -ne $_ } | ForEach-Object { $_.NextHop })
+            DnsServers=@($_.DNSServer | Where-Object { $null -ne $_ } | ForEach-Object { $_.ServerAddresses })
         }
     })
     $routes = @(Get-NetRoute -ErrorAction Stop | Where-Object {

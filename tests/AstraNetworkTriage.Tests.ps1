@@ -67,6 +67,10 @@ InModuleScope AstraNetworkTriage {
         }
     }
     Describe 'Actual bounded loopback probes' {
+        It 'collects Windows configuration without assuming IPv6 gateways exist' {
+            $local = Get-AstraLocalNetwork
+            @($local.Interfaces).Count | Should -BeGreaterThan 0
+        }
         It 'connects to an open TCP listener and detects a closed port' {
             $listener = New-Object System.Net.Sockets.TcpListener([System.Net.IPAddress]::Loopback,0)
             try {
