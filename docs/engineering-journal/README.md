@@ -116,5 +116,8 @@ Astra can therefore act as the technical laboratory while this journal preserves
 | --- | --- | --- | --- |
 | [2026-09-17 — Establish the Astra Engineering Journal](entries/2026-09-17-establish-engineering-journal.md) | Engineering entry | Validated | Establishes the documentation and evidence workflow for future Astra changes. |
 | [ADR-001 — Use Bicep for Astra Azure Infrastructure as Code](decisions/ADR-001-use-bicep-for-azure-iac.md) | Architecture decision | Accepted | Selects Bicep as the primary IaC language for the current Azure learning workstream. |
+| [2026-10-03 — Astra PKI and device trust Phase 1](entries/2026-10-03-astra-pki-device-trust-phase-1.md) | Engineering entry | Validated | Records the two-tier PKI implementation, first client certificate and end-to-end mTLS validation. |
+| [ADR-002 — Use a two-tier internal PKI with selective mTLS](decisions/ADR-002-two-tier-pki-selective-mtls.md) | Architecture decision | Accepted | Separates root trust from routine issuance and limits mTLS to services where device trust adds value. |
+| [EXP-001 — Validate Astra client-certificate mTLS enforcement](experiments/EXP-001-validate-astra-mtls-enforcement.md) | Experiment | Validated | Confirms a trusted client certificate is accepted and a request without one is rejected. |
 
 Update this table when a record becomes important enough to act as a journal milestone.

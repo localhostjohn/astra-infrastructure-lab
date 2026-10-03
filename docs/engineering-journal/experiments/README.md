@@ -23,3 +23,9 @@ Use sequential identifiers:
 The identifier remains attached to the experiment even if it is rerun. Record each run date inside the experiment file or create a new experiment when the question materially changes.
 
 Use [EXP-000](EXP-000-template.md) as the template.
+
+## Experiment index
+
+| Experiment | Status | Question |
+| --- | --- | --- |
+| [EXP-001](EXP-001-validate-astra-mtls-enforcement.md) | Validated | Does the Astra reverse proxy accept a trusted client certificate while rejecting a client without one? |
