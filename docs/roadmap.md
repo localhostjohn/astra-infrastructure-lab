@@ -25,13 +25,15 @@ Keep GitHub documentation aligned with the validated lab state. Verify the sanit
 
 **Evidence:** architecture documentation, generated inventory, validation notes and runbooks.
 
-### 2. Service access architecture — Nginx Proxy Manager and Authentik
+### 2. Service access architecture — Nginx Proxy Manager, PKI and Authentik
 
-Complete the private service-access design. Nginx Proxy Manager remains the reverse-proxy/TLS layer and Authentik should provide application authentication only where it adds value. Preserve Tailscale as the remote network-access boundary and retain an emergency management path for critical infrastructure services.
+Nginx Proxy Manager remains the reverse-proxy/TLS layer and Authentik should provide application authentication only where it adds value. Preserve Tailscale as the remote network-access boundary and retain an emergency management path for critical infrastructure services.
 
-Do not place critical recovery dependencies behind an authentication chain that could prevent recovery during an Authentik failure.
+**PKI & Device Trust Phase 1 is complete.** A two-tier internal CA hierarchy has been validated, the first trusted administrator endpoint has a dedicated client certificate, and a private mTLS test path has passed both positive and negative tests. The next phase is a controlled rollout to additional trusted devices, followed by selective mTLS enforcement on sensitive administration endpoints rather than blanket enforcement across all services.
 
-**Evidence:** architecture decision, protected-service matrix, successful/failed authentication tests and recovery/bypass procedure.
+Do not place critical recovery dependencies behind an authentication or certificate chain that could prevent recovery during an Authentik, PKI or reverse-proxy failure. Preserve a documented direct recovery route for critical management services.
+
+**Evidence:** architecture decision, certificate-chain validation, mTLS positive/negative test, protected-service matrix and recovery/bypass procedure.
 
 ### 3. DNS — AdGuard Home
 
