@@ -74,6 +74,7 @@ If a unit has a different name or is not installed, record that rather than crea
 | PI-07 | Repository integrity | Actual repository-check result | Pending first verified run |
 | PI-08 | Recovery | Isolated restore and checksum comparison | **Passed — 9 September 2026; disposable file** |
 | PI-09 | Remote endpoint control | Self-hosted RustDesk server plus endpoint registration | **Partial pass — 27 September 2026; Windows client Ready, cross-device remote-control test pending** |
+| PI-10 | PKI and device trust | Two-tier CA chain, client certificate validation and mTLS positive/negative test | **Passed — 3 October 2026 for the tested Windows endpoint and private proxy path** |
 
 The backup, retention and restore results are documented in [Backup and Recovery Validation](../evidence/2026-09-09-raspberry-pi-backup-recovery.md). Historical setup and test notes remain useful context, but they do not replace current validation. Record the date, software version, check performed, expected outcome, actual result and any corrective action for each exercise.
 
@@ -99,6 +100,16 @@ The exact private DNS names, addresses, certificate material and device identifi
 
 **PI-03 status: Passed for the tested endpoint and service path.**
 
+## PKI and device-trust checkpoint — 3 October 2026
+
+Astra now uses a two-tier internal certificate hierarchy: the Astra Root CA signs the Astra Internal Issuing CA, and the issuing CA is used for endpoint/client certificates. The first Windows test endpoint was issued a client certificate with TLS Web Client Authentication usage and the chain was validated successfully.
+
+Nginx Proxy Manager was configured to validate Astra-issued client certificates on a dedicated private mTLS test proxy. A browser session presenting the device certificate reached the backend successfully. A separate request with automatic client-certificate use disabled was rejected with HTTP 400, providing a negative-control test that confirmed the proxy was enforcing client authentication rather than merely accepting normal HTTPS.
+
+No CA private keys, endpoint private keys, PFX files, passwords, live private addresses or exact internal test hostnames are published here. The next phase is controlled rollout to additional trusted administrator devices followed by selective mTLS protection of sensitive administration services, with recovery access retained.
+
+**PI-10 status: Passed for the tested endpoint and proxy path.**
+
 ## RustDesk checkpoint — 27 September 2026
 
 RustDesk OSS has been deployed on the Pi with separate rendezvous/signalling and relay services. The first Windows endpoint has been configured against the Astra server, the Windows RustDesk service is running, and the client reached the Ready state through Tailscale. A packet capture on the Pi confirmed rendezvous traffic on the private tailnet.
@@ -107,7 +118,7 @@ No live Tailscale addresses, RustDesk keys, endpoint IDs or unattended-access cr
 
 ## Next practical exercise
 
-Complete the current host and container baseline, verify the repository integrity check after its scheduled execution, and plan an isolated application-level recovery exercise. For remote endpoint control, resume with the MacBook Neo RustDesk client and an external-network Windows control test. Do not mark broader recoverability or RustDesk end-to-end control as passed until the actual results have been recorded.
+For PKI and device trust, issue unique client certificates to additional trusted administrator devices, validate each against the existing mTLS test path, then selectively protect administration endpoints such as container/reverse-proxy management while preserving a direct recovery route. Separately, complete the current host and container baseline, verify the repository integrity check after its scheduled execution, and plan an isolated application-level recovery exercise. For remote endpoint control, resume with the MacBook Neo RustDesk client and an external-network Windows control test. Do not mark broader recoverability or RustDesk end-to-end control as passed until the actual results have been recorded.
 
 ## References
 
