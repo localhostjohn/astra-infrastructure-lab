@@ -21,6 +21,8 @@ For each exercise, record the objective, lab-only prerequisites, expected result
 | DNS-01 | DNS | Filtering and allowlist changes behave as expected | Not yet fully validated | Query-log test using fictional domains |
 | DNS-02 | Private DNS | Tailscale Split DNS resolves the private service namespace through AdGuard Home | **Passed — 26 September 2026 for the tested namespace and endpoint** | Sanitised DNS resolution and remote-access record |
 | TLS-01 | Private TLS | Private service certificate chains to the Astra Root CA and is trusted by the test client | **Passed — 26 September 2026** | Sanitised certificate inspection and browser validation |
+| PKI-01 | Internal PKI | Root CA → issuing CA → client certificate chain validates as designed | **Passed — 3 October 2026** | Sanitised chain inspection and client-certificate properties |
+| PKI-02 | Device trust / mTLS | Trusted client certificate is accepted and a client without a certificate is rejected before backend access | **Passed — 3 October 2026 for the tested Windows endpoint and proxy path** | Sanitised positive browser test and negative HTTP 400 result |
 | BAK-01 | Backup | Snapshot is created and verified | Recorded previously | Sanitised snapshot metadata |
 | BAK-02 | Recovery | Restored test data matches expected data | Not yet validated | Restore log and checksum comparison |
 | HYB-01 | Hybrid identity | Scoped identities synchronise as designed | Planned | Design and end-to-end test |

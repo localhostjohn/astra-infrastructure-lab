@@ -30,6 +30,14 @@ RustDesk adds a separate remote endpoint-control layer. The Windows workstation 
 
 Container management interfaces should remain accessible only through appropriately restricted management networks or private access controls. Publishing a port is not the same as authorising access; both host/network filtering and application authentication must be considered.
 
+## Internal PKI and device trust
+
+Astra now uses a two-tier internal PKI for the private lab: an offline/tightly protected **Astra Root CA** signs an **Astra Internal Issuing CA**, which in turn issues service and client certificates. The existing private wildcard service certificate continues to provide server-side TLS for the internal service namespace, while device certificates can be issued separately for TLS client authentication.
+
+A first Windows test workstation has been issued a client certificate with the `TLS Web Client Authentication` extended key usage. Nginx Proxy Manager was configured with a CA trust bundle for client-certificate validation, and a dedicated private test proxy was used to validate mutual TLS (mTLS). The positive test succeeded when the browser presented the Astra-issued client certificate; a request made without a client certificate was rejected with HTTP 400 before the backend application was reached.
+
+This establishes **PKI & Device Trust Phase 1**. mTLS is not intended for every service. The next phase is to issue certificates to additional trusted administrator devices, validate each against the existing test path, and then selectively protect sensitive administration endpoints while preserving a documented recovery path.
+
 DNS filtering and backup services are separate workstreams. The existence of a blocklist or backup snapshot does not establish that DNS filtering is active for every device or that full disaster recovery has been tested.
 
 ## Trust boundaries
