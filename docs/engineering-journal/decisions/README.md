@@ -24,5 +24,6 @@ Do not renumber old ADRs. If a decision changes, create a new ADR and mark the o
 | ADR | Status | Decision |
 | --- | --- | --- |
 | [ADR-001](ADR-001-use-bicep-for-azure-iac.md) | Accepted | Use Bicep as the primary IaC language for the current Astra Azure workstream. |
+| [ADR-002](ADR-002-two-tier-pki-selective-mtls.md) | Accepted | Use a two-tier internal PKI and selective mTLS for sensitive administration endpoints. |
 
 Use [ADR-000](ADR-000-template.md) as the template for new decisions.
