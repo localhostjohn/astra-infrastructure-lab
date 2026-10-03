@@ -15,6 +15,9 @@ The Raspberry Pi workstream supports practical Linux administration, container m
 - Configured Tailscale Split DNS for the private home.arpa namespace, forwarding those queries to AdGuard Home.
 - Validated the private service portal from an iPhone over cellular data with Tailscale enabled.
 - Nginx Proxy Manager provides HTTPS for the private portal using an Astra Root CA and wildcard service certificate.
+- Established a two-tier internal PKI with an Astra Root CA and Astra Internal Issuing CA for service and client certificate issuance.
+- Issued and installed the first Windows client certificate for TLS client authentication and validated the full certificate chain.
+- Configured a dedicated Nginx Proxy Manager mTLS test path; browser access with the Astra client certificate succeeded and a request without a client certificate was rejected with HTTP 400.
 - Created AdGuard Home directories and developed a custom blocklist; broader network-wide filtering validation remains a separate workstream.
 - Worked through a Restic backup repository and snapshot exercise. A complete end-to-end restore test is not yet evidenced in this public documentation.
 
@@ -23,6 +26,8 @@ The Raspberry Pi workstream supports practical Linux administration, container m
 ### Access
 
 Keep management interfaces on a private management network or authenticated private access path. Review both the container's published ports and the host firewall. Use individual accounts, strong authentication and least privilege. Never commit `.env` files, Tailscale auth keys, API tokens, passwords or real endpoint names.
+
+For selected administration endpoints, Astra can add a device-trust layer with mTLS at the reverse proxy. Treat the client certificate as a device credential: issue a unique certificate per trusted endpoint, keep its private key protected, retain revocation/replacement procedures, and preserve an emergency management route so certificate or identity failures do not create a lockout condition. Do not publish CA private keys, client private keys, PFX files or live internal hostnames.
 
 ### Container maintenance
 
