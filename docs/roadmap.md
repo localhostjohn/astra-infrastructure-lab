@@ -33,6 +33,8 @@ Nginx Proxy Manager remains the reverse-proxy/TLS layer and Authentik should pro
 
 Portainer is the first administration service protected by selective mTLS through Nginx Proxy Manager. A client certificate is required before the Portainer application is reached, and the direct Portainer management path is deliberately retained as a recovery route.
 
+Portainer has also been upgraded from 2.45.0 to 2.45.1 with a pre-change backup and post-upgrade validation. The upgrade exposed a hidden dependency on Docker container-name resolution in the reverse-proxy upstream; the proxy now targets the host-published Portainer service through a stable management address instead. mTLS enforcement and direct recovery access were revalidated after the change.
+
 The next PKI step is to decide whether another trusted device needs enrolment and then design the recovery model for protecting Nginx Proxy Manager itself. Do not protect NPM until its bypass/recovery path has been explicitly tested.
 
 Do not place critical recovery dependencies behind an authentication or certificate chain that could prevent recovery during an Authentik, PKI or reverse-proxy failure. Preserve a documented direct recovery route for critical management services.
