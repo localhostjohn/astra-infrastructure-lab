@@ -23,6 +23,8 @@ For each exercise, record the objective, lab-only prerequisites, expected result
 | TLS-01 | Private TLS | Private service certificate chains to the Astra Root CA and is trusted by the test client | **Passed — 26 September 2026** | Sanitised certificate inspection and browser validation |
 | PKI-01 | Internal PKI | Root CA → issuing CA → client certificate chain validates as designed | **Passed — 3 October 2026** | Sanitised chain inspection and client-certificate properties |
 | PKI-02 | Device trust / mTLS | Trusted client certificate is accepted and a client without a certificate is rejected before backend access | **Passed — 3 October 2026 for the tested Windows endpoint and proxy path** | Sanitised positive browser test and negative HTTP 400 result |
+| PKI-03 | Multi-platform device trust | A second administrator platform uses a unique Astra client certificate and passes the same positive/negative mTLS pattern | **Passed — 4 October 2026 for the tested macOS endpoint** | Sanitised certificate-selection and HTTP 400 test results |
+| SEC-01 | Protected administration path | Portainer requires an Astra-issued client certificate through Nginx Proxy Manager while direct recovery access remains available | **Passed — 4 October 2026** | Sanitised client-certificate prompt, negative HTTP 400 result and recovery-path check |
 | BAK-01 | Backup | Snapshot is created and verified | Recorded previously | Sanitised snapshot metadata |
 | BAK-02 | Recovery | Restored test data matches expected data | Not yet validated | Restore log and checksum comparison |
 | HYB-01 | Hybrid identity | Scoped identities synchronise as designed | Planned | Design and end-to-end test |
