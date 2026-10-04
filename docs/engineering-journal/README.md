@@ -119,5 +119,7 @@ Astra can therefore act as the technical laboratory while this journal preserves
 | [2026-10-03 — Astra PKI and device trust Phase 1](entries/2026-10-03-astra-pki-device-trust-phase-1.md) | Engineering entry | Validated | Records the two-tier PKI implementation, first client certificate and end-to-end mTLS validation. |
 | [ADR-002 — Use a two-tier internal PKI with selective mTLS](decisions/ADR-002-two-tier-pki-selective-mtls.md) | Architecture decision | Accepted | Separates root trust from routine issuance and limits mTLS to services where device trust adds value. |
 | [EXP-001 — Validate Astra client-certificate mTLS enforcement](experiments/EXP-001-validate-astra-mtls-enforcement.md) | Experiment | Validated | Confirms a trusted client certificate is accepted and a request without one is rejected. |
+| [2026-10-04 — MacBook client trust, Portainer mTLS and Portainer upgrade](entries/2026-10-04-macbook-client-trust-portainer-mtls.md) | Engineering entry | Validated | Extends device trust to macOS, protects Portainer with selective mTLS and records the 2.45.1 upgrade/recovery incident. |
+| [EXP-002 — Validate Portainer selective mTLS and upgrade recovery](experiments/EXP-002-validate-portainer-selective-mtls.md) | Experiment | Validated | Confirms Portainer survives the upgrade with mTLS and recovery access, including repair of the broken Docker-name upstream dependency. |
 
 Update this table when a record becomes important enough to act as a journal milestone.
