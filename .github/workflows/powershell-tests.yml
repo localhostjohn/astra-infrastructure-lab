@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'tools/network-triage/**'
       - 'scripts/**'
       - 'tests/**'
       - '.github/workflows/powershell-tests.yml'
@@ -39,7 +40,7 @@ jobs:
           $ErrorActionPreference = 'Stop'
           Import-Module Pester -RequiredVersion 5.9.1 -ErrorAction Stop
           $config = New-PesterConfiguration
-          $config.Run.Path = '.\tests\Get-AstraADHealth.Tests.ps1'
+          $config.Run.Path = @('.\tests\Get-AstraADHealth.Tests.ps1', '.\tests\AstraNetworkTriage.Tests.ps1')
           $config.Run.PassThru = $true
           $config.Output.Verbosity = 'Detailed'
           $config.TestResult.Enabled = $true
@@ -58,6 +59,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-# The test suite mocks all Active Directory queries and module import.
+# AD queries and module import are mocked. Triage tests mock remote probes
+# and exercise actual TCP connections only on loopback.
 # No lab credentials, network access, secrets or live directory connection are required.
 # A passing CI run does not establish the health of any real Active Directory domain.

@@ -1,0 +1,22 @@
+ILLUSTRATIVE FICTIONAL REPORT — not captured from a live lab
+Astra Network Triage 0.1.0
+Target: portal.example.test:443
+Status: Attention
+
+[Observed] LocalNetwork
+Example client: 192.0.2.10; example resolver: 192.0.2.53
+Configuration inventory does not prove connectivity.
+
+[Pass] Resolution
+192.0.2.20
+
+[Inconclusive] ICMP
+TimedOut
+Next: Compare TCP; ICMP may be filtered.
+
+[Attention] TCP
+Address: 192.0.2.20; port: 443; Connected: false
+Next: Check listener, firewall and network path. Cause is not established.
+
+[Skipped] HTTP
+Optional check not requested.
