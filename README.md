@@ -102,6 +102,7 @@ astra-infrastructure-lab/
 │   ├── architecture.md
 │   ├── active-directory.md
 │   ├── operations.md
+│   ├── backup-recovery.md
 │   ├── raspberry-pi-operations.md
 │   ├── remote-access.md
 │   ├── validation.md
@@ -121,7 +122,8 @@ astra-infrastructure-lab/
 │       └── reflections/
 ├── scripts/
 │   ├── README.md
-│   └── Get-AstraADHealth.ps1
+│   ├── Get-AstraADHealth.ps1
+│   └── Run-AstraResticRestoreDrill.sh
 ├── tests/
 │   └── Get-AstraADHealth.Tests.ps1
 ├── tools/
@@ -137,7 +139,8 @@ astra-infrastructure-lab/
 │   ├── 2026-09-08-ad-inventory-unit-tests.md
 │   ├── 2026-09-09-raspberry-pi-backup-recovery.md
 │   ├── 2026-09-09-discord-server-bootstrapper.md
-│   └── portfolio-evidence-checklist.md
+│   ├── portfolio-evidence-checklist.md
+│   └── backup-restore-evidence-template.md
 └── examples/
     └── README.md
 ```
@@ -148,7 +151,7 @@ This repository intentionally does not contain live deployment secrets, actual A
 
 The emphasis is on infrastructure engineering rather than simply installing products. Each workstream should demonstrate requirements, design choices, implementation, security considerations, evidence of testing, failure handling and lessons learned.
 
-The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. The [Astra Intune Baseline](docs/intune/README.md) documents the proposed Conditional Access, compliance, endpoint-security, update, application and BYOD controls together with a staged validation model. [Operations](docs/operations.md) covers monitoring, backup, recovery and service operations. [Remote Access](docs/remote-access.md) records the validated private-access, Split DNS and TLS architecture. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning. The [Engineering Journal](docs/engineering-journal/README.md) preserves the reasoning, decisions, experiments and reflections behind significant changes. The [Discord Server Bootstrapper](tools/discord-server-bootstrapper/README.md) provides a reusable automation example for configuration-driven service setup.
+The [Active Directory](docs/active-directory.md) notes record identity and policy exercises. The [Astra Intune Baseline](docs/intune/README.md) documents the proposed Conditional Access, compliance, endpoint-security, update, application and BYOD controls together with a staged validation model. [Operations](docs/operations.md) covers Linux, containers and service operations. [Backup and Recovery Engineering](docs/backup-recovery.md) separates backup execution, retention, repository integrity and recovery, with a reusable disposable restore drill. [Remote Access](docs/remote-access.md) records the validated private-access, Split DNS and TLS architecture. [Validation](docs/validation.md) defines how results are recorded without inventing test outcomes. The [Roadmap](docs/roadmap.md) separates completed work from the next stages of learning. The [Engineering Journal](docs/engineering-journal/README.md) preserves the reasoning, decisions, experiments and reflections behind significant changes. The [Discord Server Bootstrapper](tools/discord-server-bootstrapper/README.md) provides a reusable automation example for configuration-driven service setup.
 
 ## First practical automation example
 
