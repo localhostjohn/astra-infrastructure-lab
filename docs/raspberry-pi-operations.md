@@ -75,6 +75,8 @@ If a unit has a different name or is not installed, record that rather than crea
 | PI-08 | Recovery | Isolated restore and checksum comparison | **Passed — 9 September 2026; disposable file** |
 | PI-09 | Remote endpoint control | Self-hosted RustDesk server plus endpoint registration | **Partial pass — 27 September 2026; Windows client Ready, cross-device remote-control test pending** |
 | PI-10 | PKI and device trust | Two-tier CA chain, client certificate validation and mTLS positive/negative test | **Passed — 3 October 2026 for the tested Windows endpoint and private proxy path** |
+| PI-11 | Multi-device client trust | Second administrator platform receives a unique client certificate and passes positive/negative mTLS validation | **Passed — 4 October 2026 for the tested macOS endpoint** |
+| PI-12 | Selective admin-service mTLS | Portainer protected by mTLS through the reverse proxy while a direct recovery path remains available | **Passed — 4 October 2026** |
 
 The backup, retention and restore results are documented in [Backup and Recovery Validation](../evidence/2026-09-09-raspberry-pi-backup-recovery.md). Historical setup and test notes remain useful context, but they do not replace current validation. Record the date, software version, check performed, expected outcome, actual result and any corrective action for each exercise.
 
@@ -109,6 +111,19 @@ Nginx Proxy Manager was configured to validate Astra-issued client certificates 
 No CA private keys, endpoint private keys, PFX files, passwords, live private addresses or exact internal test hostnames are published here. The next phase is controlled rollout to additional trusted administrator devices followed by selective mTLS protection of sensitive administration services, with recovery access retained.
 
 **PI-10 status: Passed for the tested endpoint and proxy path.**
+
+
+## PKI and device-trust Phase 2A checkpoint — 4 October 2026
+
+A second trusted administrator platform, macOS, was enrolled with its own Astra client certificate rather than reusing the Windows identity. The MacBook trusts the Astra Root CA at the system level while the device certificate remains a separate client-authentication credential. The positive browser path succeeded when the MacBook certificate was selected, and a no-client-certificate request returned HTTP 400.
+
+Portainer was then selected as the first real administration endpoint to move from test-only mTLS validation to production-like enforcement. Nginx Proxy Manager now requires an Astra-issued client certificate before the protected Portainer hostname is proxied to the application. The Windows administrator endpoint successfully presented its device certificate and reached Portainer, while a request without a client certificate returned HTTP 400.
+
+A direct Portainer management path remains available outside Nginx Proxy Manager. This is intentional: a certificate, reverse-proxy or NPM failure must not remove the recovery route to the container-management plane.
+
+**PI-11 status: Passed for the tested macOS endpoint.**
+
+**PI-12 status: Passed for the protected Portainer path and recovery-route check.**
 
 ## RustDesk checkpoint — 27 September 2026
 
