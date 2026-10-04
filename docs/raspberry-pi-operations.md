@@ -77,6 +77,7 @@ If a unit has a different name or is not installed, record that rather than crea
 | PI-10 | PKI and device trust | Two-tier CA chain, client certificate validation and mTLS positive/negative test | **Passed — 3 October 2026 for the tested Windows endpoint and private proxy path** |
 | PI-11 | Multi-device client trust | Second administrator platform receives a unique client certificate and passes positive/negative mTLS validation | **Passed — 4 October 2026 for the tested macOS endpoint** |
 | PI-12 | Selective admin-service mTLS | Portainer protected by mTLS through the reverse proxy while a direct recovery path remains available | **Passed — 4 October 2026** |
+| PI-13 | Portainer upgrade | Backup, application/database migration, reverse-proxy recovery, mTLS retest and direct recovery-path validation | **Passed — 4 October 2026; upgraded 2.45.0 → 2.45.1** |
 
 The backup, retention and restore results are documented in [Backup and Recovery Validation](../evidence/2026-09-09-raspberry-pi-backup-recovery.md). Historical setup and test notes remain useful context, but they do not replace current validation. Record the date, software version, check performed, expected outcome, actual result and any corrective action for each exercise.
 
@@ -124,6 +125,21 @@ A direct Portainer management path remains available outside Nginx Proxy Manager
 **PI-11 status: Passed for the tested macOS endpoint.**
 
 **PI-12 status: Passed for the protected Portainer path and recovery-route check.**
+
+
+## Portainer upgrade checkpoint — 4 October 2026
+
+Before upgrading Portainer, the persistent data volume was archived to a separate Astra backup location. The running deployment was inspected so the Docker socket bind, persistent `portainer_data` volume, restart policy and published HTTPS port could be recreated without guessing.
+
+The LTS image was updated from 2.45.0 to 2.45.1. Startup logs showed Portainer backing up its database and completing the internal database migration to 2.45.1 before starting the HTTPS service.
+
+The first post-upgrade reverse-proxy test returned HTTP 502. Direct access to Portainer succeeded, and a request from inside the Nginx Proxy Manager container to the host-published Portainer HTTPS port also succeeded. Inspection of the generated NPM configuration showed that the proxy still depended on the Docker container name as its upstream. Recreating Portainer with a standalone `docker run` changed that Docker network relationship, so NPM could no longer reach the service through the old container-name path.
+
+The proxy upstream was changed to the Pi host's stable management address and published Portainer HTTPS port. Nginx configuration validation passed. The protected administration path again requested an Astra client certificate, a request that deliberately supplied no client certificate received HTTP 400, and the direct Portainer management route remained available for recovery.
+
+This incident reinforced that container-name resolution is a Docker-network dependency rather than a stable service-discovery mechanism unless the participating containers are deliberately attached to the same user-defined network.
+
+**PI-13 status: Passed — Portainer 2.45.1 running, mTLS retained, proxy path restored and recovery access retained.**
 
 ## RustDesk checkpoint — 27 September 2026
 
