@@ -36,7 +36,11 @@ Astra now uses a two-tier internal PKI for the private lab: an offline/tightly p
 
 A first Windows test workstation has been issued a client certificate with the `TLS Web Client Authentication` extended key usage. Nginx Proxy Manager was configured with a CA trust bundle for client-certificate validation, and a dedicated private test proxy was used to validate mutual TLS (mTLS). The positive test succeeded when the browser presented the Astra-issued client certificate; a request made without a client certificate was rejected with HTTP 400 before the backend application was reached.
 
-This establishes **PKI & Device Trust Phase 1**. mTLS is not intended for every service. The next phase is to issue certificates to additional trusted administrator devices, validate each against the existing test path, and then selectively protect sensitive administration endpoints while preserving a documented recovery path.
+Phase 2 extended the same trust model to a macOS administrator endpoint. The MacBook uses the Astra Root CA as its system trust anchor and a separate device certificate, issued by the Astra Internal Issuing CA, for client authentication. Positive browser access and a negative no-client-certificate test were both validated.
+
+Portainer is the first production-like Astra administration endpoint now protected by selective mTLS through Nginx Proxy Manager. The protected hostname requires an Astra-issued client certificate before Portainer authentication is reached, while the direct Portainer management port is intentionally retained as a recovery path that bypasses the reverse proxy.
+
+This establishes **PKI & Device Trust Phase 2A**. mTLS remains selective rather than universal. Future rollout should continue device-by-device and service-by-service, with recovery access designed before additional critical administration endpoints are protected.
 
 DNS filtering and backup services are separate workstreams. The existence of a blocklist or backup snapshot does not establish that DNS filtering is active for every device or that full disaster recovery has been tested.
 
