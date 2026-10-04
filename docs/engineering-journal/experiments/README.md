@@ -29,3 +29,4 @@ Use [EXP-000](EXP-000-template.md) as the template.
 | Experiment | Status | Question |
 | --- | --- | --- |
 | [EXP-001](EXP-001-validate-astra-mtls-enforcement.md) | Validated | Does the Astra reverse proxy accept a trusted client certificate while rejecting a client without one? |
+| [EXP-002](EXP-002-validate-portainer-selective-mtls.md) | Validated | Can Portainer remain protected by mTLS and independently recoverable after an application/container upgrade? |
