@@ -18,6 +18,10 @@ The Raspberry Pi workstream supports practical Linux administration, container m
 - Established a two-tier internal PKI with an Astra Root CA and Astra Internal Issuing CA for service and client certificate issuance.
 - Issued and installed the first Windows client certificate for TLS client authentication and validated the full certificate chain.
 - Configured a dedicated Nginx Proxy Manager mTLS test path; browser access with the Astra client certificate succeeded and a request without a client certificate was rejected with HTTP 400.
+- Issued a separate client certificate to a macOS administrator endpoint, anchored trust at the Astra Root CA, and validated both positive and negative mTLS paths.
+- Moved Portainer from test-only validation to selective mTLS enforcement on its reverse-proxied administration path while retaining direct management access as a recovery route.
+- Upgraded Portainer from 2.45.0 to 2.45.1 with a pre-change data-volume backup; Portainer completed its internal database migration successfully.
+- Revalidated the protected Portainer path after the upgrade. Recreating the container removed the previous shared Docker-network dependency, so the NPM upstream was changed from container-name resolution to the Pi host's stable management address; mTLS rejection and direct recovery access remained intact.
 - Created AdGuard Home directories and developed a custom blocklist; broader network-wide filtering validation remains a separate workstream.
 - Worked through a Restic backup repository and snapshot exercise. A complete end-to-end restore test is not yet evidenced in this public documentation.
 
