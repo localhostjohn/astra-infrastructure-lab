@@ -122,4 +122,6 @@ Astra can therefore act as the technical laboratory while this journal preserves
 | [2026-10-04 — MacBook client trust, Portainer mTLS and Portainer upgrade](entries/2026-10-04-macbook-client-trust-portainer-mtls.md) | Engineering entry | Validated | Extends device trust to macOS, protects Portainer with selective mTLS and records the 2.45.1 upgrade/recovery incident. |
 | [EXP-002 — Validate Portainer selective mTLS and upgrade recovery](experiments/EXP-002-validate-portainer-selective-mtls.md) | Experiment | Validated | Confirms Portainer survives the upgrade with mTLS and recovery access, including repair of the broken Docker-name upstream dependency. |
 
+| [ADR-003 — Evaluate AWS EC2 for private Nextcloud](decisions/ADR-003-evaluate-aws-ec2-private-nextcloud.md) | Architecture decision | Proposed | Evaluates an EC2-hosted Nextcloud proof of concept with private DNS, NPM, Tailscale, costs and recovery requirements. |
+
 Update this table when a record becomes important enough to act as a journal milestone.
