@@ -76,3 +76,8 @@ Develop repeatable PowerShell checks, document GPO backup and restore, test dele
 ## Read-only automation example
 
 The [AD inventory script](../scripts/README.md) is a first step toward repeatable diagnostics. It uses read-only ActiveDirectory cmdlets and optional, explicit local report export. Its mock tests and live-lab results remain to be validated; do not represent the example as a completed health check.
+
+
+## Windows Server and virtualisation companion runbooks (16 November 2026)
+
+The [Windows Server & Virtualisation documentation index](windows-server/README.md) now adds separate runbooks for [VirtualBox](windows-server/virtualbox-deployment.md), [Azure IaaS](windows-server/azure-vm-deployment.md), [AD DS/DNS](windows-server/adds-and-dns.md), [Group Policy](windows-server/group-policy.md), [security and delegation](windows-server/security-and-delegation.md), and [validation/recovery](windows-server/validation-and-recovery.md). Existing recorded AD DS exercises remain historical until the relevant lab is freshly inspected and results captured. No connectivity, replication or hybrid synchronisation between the two hosting environments is assumed.
