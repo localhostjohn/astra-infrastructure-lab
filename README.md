@@ -193,3 +193,8 @@ For Windows Server work, start with a disposable VM and a lab-only directory. Fo
 See [SECURITY.md](SECURITY.md). All public examples are based on personal lab environments or fictional data. Employer infrastructure, internal configuration, credentials and confidential information are not published here.
 
 Maintained by John Weekes as a personal learning portfolio. The repository is not affiliated with or endorsed by the vendors whose products are referenced.
+
+
+## Windows Server and virtualisation documentation
+
+The [Windows Server & Virtualisation documentation](docs/windows-server/README.md) covers the local VirtualBox and personal Azure IaaS Windows Server lab workstreams, AD DS/DNS, Group Policy, least-privilege delegation and a validation/recovery runbook. Historical exercises are distinguished from current configuration and tests that have not been rerun. These documents are a portfolio evidence framework, **not a claim of production ownership or completed live acceptance testing**.
