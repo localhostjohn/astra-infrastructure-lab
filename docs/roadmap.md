@@ -169,3 +169,10 @@ A workstream is complete when its **purpose, design, implementation, validation,
 An incomplete or failed experiment is still valuable portfolio evidence when accurately explained.
 
 The objective is not to maximise the number of services in Astra. The objective is to demonstrate that the environment can be **understood, automated, operated, troubleshot and recovered**.
+
+
+## Windows Server virtualisation evidence workstream — 16 November 2026
+
+**Documentation published:** [Windows Server & Virtualisation](windows-server/README.md) now provides separate VirtualBox and Azure IaaS runbooks, AD DS/DNS and GPO/security notes, and a validation/recovery register. This completes the documentation **structure**, not the live testing.
+
+**Next acceptance gates:** inventory the real VirtualBox and Azure VM configuration privately; verify AD DS/DNS health, effective GPO application, permitted/denied delegated actions and scheduled-task identity; then run one safe disposable recovery test. Publish dated, sanitised evidence in the [validation register](windows-server/validation-and-recovery.md). Do not claim the Azure and VirtualBox labs are joined, replicated, continuously online or production-ready without evidence.
