@@ -115,3 +115,16 @@ A monitor on the same Pi cannot demonstrate detection of a total Pi outage while
 - [ ] Reconcile summary/register wording when new results are added. The older general [validation register](../docs/validation.md) still contains pre-evidence statuses; use the dated source records above for these specific results.
 
 See [Security and Publication](../SECURITY.md) and the [Pi operations runbook](../docs/raspberry-pi-operations.md).
+
+
+### Windows Server / virtualisation — documentation baseline (16 November 2026)
+
+See the [Windows Server validation and recovery register](../docs/windows-server/validation-and-recovery.md). New documentation and read-only test instructions have been published; **no new live VM, domain-controller, GPO or recovery validation has been performed as part of that publication**.
+
+- [x] Separate VirtualBox and Azure deployment/runbook documentation created.
+- [x] AD DS/DNS, Group Policy, security/delegation and recovery evidence framework written.
+- [ ] Capture a sanitised inventory of the actual VirtualBox host/VM/network settings.
+- [ ] Capture a sanitised inventory of the Azure VM, access route and VNet/DNS/NSG configuration.
+- [ ] Execute and record live AD DS and DNS checks in the appropriate authorised lab.
+- [ ] Demonstrate effective GPO scope, permitted/denied delegation and service-account task execution.
+- [ ] Complete a controlled disposable recovery test and publish measured results.
